@@ -26,8 +26,11 @@
       </div>
     </div>
     <div class="table-wrapper">
-      <el-table :header-cell-style="{backgroundColor:'#f0f0f0'}"
+      <el-table ref="table"
+                :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
                 :data="tableData" :show-header="true"
+                highlight-current-row
+                @current-change="handleCurrentChange"
                 style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -35,23 +38,23 @@
               <el-table
                 :data="props.row.children" :show-header="false"
                 style="width: 100%">
-                <el-table-column
+                <el-table-column width="280"
                   label="步骤"
                   prop="stepInfo">
                 </el-table-column>
-                <el-table-column
+                <el-table-column width="120"
                   label="状态"
                   prop="status">
                   <template slot-scope="scope">
                     {{ gainStatus(scope.row.status) }}
                   </template>
                 </el-table-column>
-                <el-table-column
+                <el-table-column width="700"
                   label="日志"
                   prop="logInfo">
                 </el-table-column>
                 <el-table-column
-                  label="耗时"
+                  label="耗时" align="center"
                   prop="consumeTime">
                 </el-table-column>
               </el-table>
@@ -59,17 +62,17 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="步骤"
+          label="步骤" width="280"
           prop="stepInfo">
         </el-table-column>
         <el-table-column
-          label="状态"
+          label="状态" width="120"
           prop="status">
           <template slot-scope="scope">
             {{ gainStatus(scope.row.status) }}
           </template>
         </el-table-column>
-        <el-table-column
+        <el-table-column width="700"
           label="进度与日志"
           prop="progress">
           <template slot-scope="scope">
@@ -77,7 +80,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="耗时"
+          label="耗时" align="center"
           prop="consumeTime">
         </el-table-column>
         <el-table-column label="操作" align="left">
@@ -162,7 +165,8 @@ export default {
         { name: "成果检查", value: "成果检查" },
         { name: "成果输出", value: "成果输出" },
         { name: "数据入库", value: "数据入库" }
-      ]
+      ],
+      currentRow: null
     };
   },
   methods: {
@@ -170,6 +174,7 @@ export default {
       console.log(index, row);
     },
     handleRestart(cmd) {
+      if (!this.currentRow) return;
       console.log("handleRestart....", cmd);
     },
     gainStatus(status) {
@@ -200,9 +205,16 @@ export default {
     goList() {
       this.$router.replace("/fit-comparison");
     },
+    handleCurrentChange(val) {
+      this.currentRow = val;
+    },
     handleExpand() {
+      if (!this.currentRow) return;
+      this.$refs.table.toggleRowExpansion(this.currentRow, true);
     },
     handleFold() {
+      if (!this.currentRow) return;
+      this.$refs.table.toggleRowExpansion(this.currentRow, false);
     }
   }
 };
@@ -213,6 +225,8 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 10px;
+  min-width: 1350px;
 }
 
 .location-info {
