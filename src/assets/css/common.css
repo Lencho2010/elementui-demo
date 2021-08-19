@@ -1,0 +1,39 @@
+.search-wrap {
+    width: 340px;
+    position: relative;
+}
+.search-wrap.fl {
+    float: right;
+}
+.search-input .el-input__inner {
+    border-color: #e6e6e6;
+    background: none;
+    border-radius: 5px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 36px 0 20px;
+    font-size: 14px;
+}
+
+.radius .el-input__inner {
+    border-color: #66b1ff;
+    background: none;
+    border-radius: 20px;
+}
+
+.search-input .el-input.is-active .el-input__inner,
+.el-input__inner:focus {
+    border-color: #d6e8fd;
+}
+.search-input .el-input__inner:hover {
+    border-color: #e6e6e6;
+}
+.search-wrap i {
+    height: 40px;
+    width: 40px;
+    background: url("../../assets/images/search_i.png") center no-repeat;
+    position: absolute;
+    right: 3px;
+    top: 0;
+    cursor: pointer;
+}
