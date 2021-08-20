@@ -6,10 +6,10 @@
         <span>当前位置：</span> <i class="go-back" @click="goList">套合比对</i> <span> > 任务详情</span>
       </div>
       <div class="task-info">
-        <span>任务名称：2021S105300011</span>
-        <span>检测图斑数：2700</span>
-        <span>开始时间：2021-05-30 21:00:00</span>
-        <span>结束时间：2021-05-30 22:00:00</span>
+        <span>任务名称：{{ taskInfo.taskName }}</span>
+        <span>检测图斑数：{{ taskInfo.tbCount }}</span>
+        <span>开始时间：{{ taskInfo.startTime }}</span>
+        <span>结束时间：{{ taskInfo.endTime }}</span>
       </div>
 
       <div style="display: flex; align-items: center; height: 70px;">
@@ -27,6 +27,7 @@
     </div>
     <div class="table-wrapper">
       <el-table ref="table"
+                v-loading="isLoading"
                 :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
                 :data="tableData" :show-header="true"
                 highlight-current-row
@@ -39,19 +40,19 @@
                 :data="props.row.children" :show-header="false"
                 style="width: 100%">
                 <el-table-column width="280"
-                  label="步骤"
-                  prop="stepInfo">
+                                 label="步骤"
+                                 prop="stepInfo">
                 </el-table-column>
                 <el-table-column width="120"
-                  label="状态"
-                  prop="status">
+                                 label="状态"
+                                 prop="status">
                   <template slot-scope="scope">
                     {{ gainStatus(scope.row.status) }}
                   </template>
                 </el-table-column>
                 <el-table-column width="700"
-                  label="日志"
-                  prop="logInfo">
+                                 label="日志"
+                                 prop="logInfo">
                 </el-table-column>
                 <el-table-column
                   label="耗时" align="center"
@@ -73,8 +74,8 @@
           </template>
         </el-table-column>
         <el-table-column width="700"
-          label="进度与日志"
-          prop="progress">
+                         label="进度与日志"
+                         prop="progress">
           <template slot-scope="scope">
             <el-progress :percentage="scope.row.progress"></el-progress>
           </template>
@@ -83,11 +84,15 @@
           label="耗时" align="center"
           prop="consumeTime">
         </el-table-column>
-        <el-table-column label="操作" align="left">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini" style=""
               @click="handleDetail(scope.$index, scope.row)">查看
+            </el-button>
+            <el-button v-if="scope.row.stepInfo==='成果检查'"
+                       size="mini" style=""
+                       @click="handleDetail(scope.$index, scope.row)">标识例外
             </el-button>
           </template>
         </el-table-column>
@@ -97,67 +102,26 @@
 </template>
 
 <script>
+import date2str from "../../util/date2str";
+import taskDetail from "../../test/taskDetail";
+
 export default {
   name: "TaskDetail",
+  props: ["taskName"],
+  mounted() {
+    if (this.$parent) {
+      this.$parent.showDetail = true;
+    }
+    this.gainData(this.taskName);
+  },
+  beforeDestroy() {
+    if (this.$parent) {
+      this.$parent.showDetail = false;
+    }
+  },
   data() {
     return {
-      tableData: [{
-        stepInfo: "接受解压",
-        status: 1,
-        progress: 100,
-        consumeTime: "1min"
-      }, {
-        stepInfo: "质量检查",
-        status: 1,
-        progress: 100,
-        consumeTime: "30min"
-      }, {
-        stepInfo: "套合对比",
-        status: 2,
-        progress: 90,
-        consumeTime: "100min",
-        children: [{
-          stepInfo: "与土地利用现状数据套合比对",
-          status: 1,
-          logInfo: "共300个要素进行套合比对，其中300个要素天河比对通过",
-          consumeTime: "10min"
-        }, {
-          stepInfo: "与土地利用总体规划数据套合比对",
-          status: 1,
-          logInfo: "共300个要素进行套合比对，其中300个要素天河比对通过",
-          consumeTime: "10min"
-        }, {
-          stepInfo: "与永久基本农田数据套合比对",
-          status: 1,
-          logInfo: "共300个要素进行套合比对，其中300个要素天河比对通过",
-          consumeTime: "10min"
-        }, {
-          stepInfo: "与国家自然保护区数据套合比对",
-          status: 1,
-          logInfo: "共300个要素进行套合比对，其中300个要素天河比对通过",
-          consumeTime: "10min"
-        }, {
-          stepInfo: "与批准农转用数据套合比对",
-          status: 1,
-          logInfo: "共300个要素进行套合比对，其中300个要素天河比对通过",
-          consumeTime: "10min"
-        }]
-      }, {
-        stepInfo: "成果检查",
-        status: 0,
-        progress: 0,
-        consumeTime: ""
-      }, {
-        stepInfo: "成果输出",
-        status: 0,
-        progress: 0,
-        consumeTime: ""
-      }, {
-        stepInfo: "数据入库",
-        status: 0,
-        progress: 0,
-        consumeTime: ""
-      }],
+      tableData: [],
       stepInfos: [
         { name: "接受解压", value: "接受解压" },
         { name: "质量检查", value: "质量检查" },
@@ -166,10 +130,30 @@ export default {
         { name: "成果输出", value: "成果输出" },
         { name: "数据入库", value: "数据入库" }
       ],
-      currentRow: null
+      currentRow: null,
+      taskInfo: {
+        taskName: "",
+        tbCount: 0,
+        startTime: "-",
+        endTime: "-",
+        detailInfo: []
+      },
+      isLoading: false
     };
   },
   methods: {
+    gainData(tName) {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.taskInfo.taskName = tName;
+        this.taskInfo.tbCount = Math.floor((Math.random() * 100) + 3000);
+        this.taskInfo.startTime = date2str(this.gainTaskStartTime(), "yyyy-MM-dd hh:mm:ss");
+        this.taskInfo.endTime = date2str(new Date(), "yyyy-MM-dd hh:mm:ss");
+
+        this.tableData = taskDetail();
+        this.isLoading = false;
+      }, 2000);
+    },
     handleDetail(index, row) {
       console.log(index, row);
     },
@@ -203,7 +187,7 @@ export default {
       return ret;
     },
     goList() {
-      this.$router.replace("/fit-comparison");
+      this.$router.push({ name: "fit-comparison" });
     },
     handleCurrentChange(val) {
       this.currentRow = val;
@@ -215,6 +199,14 @@ export default {
     handleFold() {
       if (!this.currentRow) return;
       this.$refs.table.toggleRowExpansion(this.currentRow, false);
+    },
+    gainTaskStartTime() {
+      const randomNum = Math.floor((Math.random() * 10) + 1);
+      const now = new Date;
+      now.setHours((now.getHours() - randomNum));
+      now.setMinutes((now.getMinutes() - randomNum));
+      now.setSeconds((now.getSeconds() - randomNum));
+      return now;
     }
   }
 };
@@ -225,7 +217,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 10px;
+  /*padding: 10px;*/
   min-width: 1350px;
 }
 

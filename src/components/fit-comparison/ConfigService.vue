@@ -34,7 +34,7 @@
     </div>
     <span slot="footer" class="dialog-footer">
     <el-button @click="centerDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="handleOk">确 定</el-button>
+    <el-button type="primary" :loading="isLoading" @click="handleOk">确 定</el-button>
   </span>
   </el-dialog>
 </template>
@@ -61,7 +61,8 @@ export default {
           { value: "http://www.baidu.com", label: "http://www.github.com" },
           { value: "http://www.google.com", label: "http://www.github.com" }
         ]
-      }
+      },
+      isLoading: false
     };
   },
   methods: {
@@ -69,12 +70,14 @@ export default {
       this.centerDialogVisible = true;
     },
     handleOk() {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.$message.warning("请输入正确的配置信息...");
+        this.isLoading = false;
+      }, 2000);
 
-      this.$message.warning("请输入正确的配置信息...")
-      return;
-
-      this.centerDialogVisible = false;
-      this.$message.success("保存配置成功！")
+      /*this.centerDialogVisible = false;
+      this.$message.success("保存配置成功！")*/
 
     }
   }

@@ -35,6 +35,7 @@
       <div class="table-wrapper">
         <el-table :cell-style="cellStyle"
                   :data="tableData"
+                  v-loading="isLoading"
                   :highlight-current-row="true"
                   :header-cell-style="{backgroundColor:'#f0f0f0'}"
                   style="width: 100%">
@@ -119,6 +120,7 @@
 
 <script>
 import ConfigService from "./ConfigService";
+import date2str from "../../util/date2str";
 
 export default {
   name: "FitComparison",
@@ -126,6 +128,11 @@ export default {
   mounted() {
     // this.statusChange(this.menus.selectStatus);
     // this.createTaskInfos();
+    this.showDetail = false;
+    this.isLoading = true;
+    setTimeout(()=>{
+      this.isLoading = false;
+    },2500)
     this.intervalList();
   },
   beforeDestroy() {
@@ -134,47 +141,7 @@ export default {
   data() {
     return {
       tableData: [],
-      originData: [{
-        index: 1,
-        taskName: "2021S105300010",
-        status: 0,//0-待执行；1-执行成功；-1-执行失败；2-暂停
-        startTime: "2021-05-04 21:00:00",
-        endTime: "2021-05-05 11:35:00",
-        creator: "admin",
-        num: 50
-      }, {
-        index: 2,
-        taskName: "2021S105300020",
-        status: 1,//0-待执行；1-执行成功；-1-执行失败；2-暂停
-        startTime: "2021-05-04 21:00:00",
-        endTime: "2021-05-05 11:35:00",
-        creator: "admin",
-        num: 80
-      }, {
-        index: 3,
-        taskName: "2021S105300030",
-        status: -1,//0-待执行；1-执行成功；-1-执行失败；2-暂停
-        startTime: "2021-05-04 21:00:00",
-        endTime: "2021-05-05 11:35:00",
-        creator: "admin",
-        num: 30
-      }, {
-        index: 4,
-        taskName: "2021S105300040",
-        status: 2,//0-待执行；1-执行成功；-1-执行失败；2-暂停
-        startTime: "2021-05-04 21:00:00",
-        endTime: "2021-05-05 11:35:00",
-        creator: "admin",
-        num: 60
-      }, {
-        index: 5,
-        taskName: "2021S105300040",
-        status: 3,//0-待执行；1-执行成功；-1-执行失败；2-暂停
-        startTime: "2021-05-04 21:00:00",
-        endTime: "2021-05-05 11:35:00",
-        creator: "admin",
-        num: 60
-      }],
+      originData: [],
       searchText: "",
       menus: {
         selectStatus: "all",
@@ -195,13 +162,15 @@ export default {
       intervalItem: 0,
       interval: 3000,
       autoRefresh: true,
-      showDetail: false
+      showDetail: false,
+      isLoading: false
     };
   },
   methods: {
     handleDetail(index, row) {
-      this.showDetail = true;
-      this.$router.push({ name: "task-detail" }); //"/fit-comparison/task-detail"
+      // this.showDetail = true;
+      // this.$router.push({ name: "task-detail" }); //"/fit-comparison/task-detail"
+      this.$router.push({ path: `/fit-comparison/task-detail/${row.taskName}` }); //"/fit-comparison/task-detail"
     },
     handleEdit(index, row) {
       console.log(index, row);
@@ -338,19 +307,6 @@ export default {
     handleRandomStatus() {
       return Math.floor((Math.random() * 4) - 1);
     },
-    date2str(x, y) {
-      const z = {
-        y: x.getFullYear(),
-        M: x.getMonth() + 1,
-        d: x.getDate(),
-        h: x.getHours(),
-        m: x.getMinutes(),
-        s: x.getSeconds()
-      };
-      return y.replace(/(y+|M+|d+|h+|m+|s+)/g, function(v) {
-        return ((v.length > 1 ? "0" : "") + eval("z." + v.slice(-1))).slice(-(v.length > 2 ? v.length : 2));
-      });
-    },
     gainTaskStartTime() {
       const randomNum = Math.floor((Math.random() * 10) + 1);
       const now = new Date;
@@ -369,10 +325,10 @@ export default {
 
       let startTime = "-", endTime = "-";
       if ([1, -1].indexOf(status) > -1) {
-        startTime = this.date2str(this.gainTaskStartTime(), "yyyy-MM-d h:m:s");
-        endTime = this.date2str(new Date(), "yyyy-MM-d h:m:s");
+        startTime = date2str(this.gainTaskStartTime(), "yyyy-MM-dd hh:mm:ss");
+        endTime = date2str(new Date(), "yyyy-MM-dd hh:mm:ss");
       } else if ([2, 3].indexOf(status) > -1) {
-        startTime = this.date2str(this.gainTaskStartTime(), "yyyy-MM-d h:m:s");
+        startTime = date2str(this.gainTaskStartTime(), "yyyy-MM-dd hh:mm:ss");
       }
 
       return {
@@ -413,7 +369,8 @@ export default {
 
 <style scoped>
 .container {
-  height: 100%;
+  /*height: 100%;*/
+  flex: 1;
   min-width: 1360px;
   padding: 0 10px;
 }

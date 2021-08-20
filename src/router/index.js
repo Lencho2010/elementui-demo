@@ -18,11 +18,11 @@ const routes = [
     path: "/",
     redirect: "/fit-comparison"
   },
-  {
+  /*{
     path: "/task-detail",
     name: "task-detail",
     component: () => import("../components/fit-comparison/TaskDetail.vue")
-  },
+  },*/
   {
     path: "/about",
     name: "About",
