@@ -1,0 +1,65 @@
+export default function() {
+
+  return [{
+    index: "1",
+    dataName: "111-房山区",
+    countyCode: "110111",
+    countyName: "房山区111",
+    cityCode: "110100",
+    cityName: "北京市",
+    provinceCode: "110000",
+    provinceName: "北京市",
+    dataPath: "\\localhost\\workspace\\原始数据\\"
+  }, {
+    index: "2",
+    dataName: "222-房山区",
+    countyCode: "110222",
+    countyName: "房山区222",
+    cityCode: "110100",
+    cityName: "北京市",
+    provinceCode: "110000",
+    provinceName: "北京市",
+    dataPath: "\\localhost\\workspace\\原始数据\\"
+  }, {
+    index: "3",
+    dataName: "1333-房山区",
+    countyCode: "110333",
+    countyName: "房山区333",
+    cityCode: "110100",
+    cityName: "北京市",
+    provinceCode: "110000",
+    provinceName: "北京市",
+    dataPath: "\\localhost\\workspace\\原始数据\\"
+  }, {
+    index: "4",
+    dataName: "14444-房山区",
+    countyCode: "110444",
+    countyName: "房山区444",
+    cityCode: "110100",
+    cityName: "北京市",
+    provinceCode: "110000",
+    provinceName: "北京市",
+    dataPath: "\\localhost\\workspace\\原始数据\\"
+  }, {
+    index: "5",
+    dataName: "15555-房山区",
+    countyCode: "110555",
+    countyName: "房山区555",
+    cityCode: "110100",
+    cityName: "北京市",
+    provinceCode: "110000",
+    provinceName: "北京市",
+    dataPath: "\\localhost\\workspace\\原始数据\\"
+  }, {
+    index: "6",
+    dataName: "6666-房山区",
+    countyCode: "110666",
+    countyName: "房山区666",
+    cityCode: "110100",
+    cityName: "北京市",
+    provinceCode: "110000",
+    provinceName: "北京市",
+    dataPath: "\\localhost\\workspace\\原始数据\\"
+  }];
+
+}

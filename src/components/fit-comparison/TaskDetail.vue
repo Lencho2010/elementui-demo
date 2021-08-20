@@ -1,9 +1,12 @@
 <template>
   <div class="root-wrapper">
-
     <div class="header">
       <div class="location-info">
-        <span>当前位置：</span> <i class="go-back" @click="goList">套合比对</i> <span> > 任务详情</span>
+        <span>当前位置：</span>
+        <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size: 16px">
+          <el-breadcrumb-item :to="{ name: 'fit-comparison' }">套合比对</el-breadcrumb-item>
+          <el-breadcrumb-item>任务详情</el-breadcrumb-item>
+        </el-breadcrumb>
       </div>
       <div class="task-info">
         <span>任务名称：{{ taskInfo.taskName }}</span>
@@ -98,16 +101,19 @@
         </el-table-column>
       </el-table>
     </div>
+    <unzip-detail ref="unzip"></unzip-detail>
   </div>
 </template>
 
 <script>
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
+import UnzipDetail from "./detail/UnzipDetail";
 
 export default {
   name: "TaskDetail",
   props: ["taskName"],
+  components: { UnzipDetail },
   mounted() {
     if (this.$parent) {
       this.$parent.showDetail = true;
@@ -156,6 +162,7 @@ export default {
     },
     handleDetail(index, row) {
       console.log(index, row);
+      this.$refs.unzip.showDialog();
     },
     handleRestart(cmd) {
       if (!this.currentRow) return;
@@ -226,6 +233,8 @@ export default {
   font-size: 16px;
   height: 30px;
   line-height: 30px;
+  /*justify-content: center;*/
+  align-items: center;
 }
 
 .task-info {
