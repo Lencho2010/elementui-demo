@@ -1,5 +1,5 @@
 <template>
-  <div id="unzip-wrapper">
+  <div id="quality-check">
     <el-dialog ref="dialog"
                :visible.sync="centerDialogVisible"
                width="100%"
@@ -7,7 +7,11 @@
       <div class="root-wrapper">
         <div class="header">
           <div class="left">
-            <span class="title">{{ title }}</span>
+            <el-tabs style="margin-left: 20px" v-model="activeName" @tab-click="handleTabChange">
+              <el-tab-pane label="质检总览" name="overview"></el-tab-pane>
+              <el-tab-pane label="质检明细" name="detail"></el-tab-pane>
+              <el-tab-pane label="质检不通过图斑" name="fail"></el-tab-pane>
+            </el-tabs>
             <div class="search-wrap fl" style="margin-left: 50px">
               <el-input
                 class="search-input"
@@ -51,37 +55,60 @@
 </template>
 
 <script>
-import unzipData from "../../../test/unzipData";
 import layExcel from "lay-excel";
+import qualityCheck from "../../../test/qualityCheck";
 
 export default {
-  name: "UnzipDetail",
+  name: "QualityCheck",
   mounted() {
-    this.originData = unzipData();
-    this.filterInfo.options = this.columns
-      .filter(item => item.filter)
-      .map(item => ({
-        value: item.prop,
-        label: item.label
-      }));
-    this.filterInfo.modelVal = this.filterInfo.options[0].label;
-    this.filterInfo.curValue = this.filterInfo.options[0].value;
-    this.getList();
+    this.handleTabChange();
   },
   data() {
     return {
-      title: "原始数据",
-      columns: [
-        { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-        { prop: "dataName", label: "数据名称", width: 170, align: "center", filter: true },
-        { prop: "countyCode", label: "区县代码", width: 170, align: "center", filter: true },
-        { prop: "countyName", label: "区县名称", width: 170, align: "center", filter: true },
-        { prop: "cityCode", label: "地市代码", width: 170, align: "center", filter: true },
-        { prop: "cityName", label: "地市名称", width: 170, align: "center", filter: true },
-        { prop: "provinceCode", label: "省级代码", width: 170, align: "center", filter: true },
-        { prop: "provinceName", label: "省级名称", width: 170, align: "center", filter: true },
-        { prop: "dataPath", label: "路径", width: "auto", align: "left", filter: false }
-      ],
+      columns: [],
+      columnInfo: {
+        overview: [
+          { prop: "index", label: "序号", width: 80, align: "center", filter: false },
+          { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+          { prop: "countyCode", label: "区县代码", width: 170, align: "center", filter: true },
+          { prop: "countyName", label: "区县名称", width: 170, align: "center", filter: true },
+          { prop: "cityCode", label: "地市代码", width: 170, align: "center", filter: true },
+          { prop: "cityName", label: "地市名称", width: 170, align: "center", filter: true },
+          { prop: "provinceCode", label: "省级代码", width: 170, align: "center", filter: true },
+          { prop: "provinceName", label: "省级名称", width: 170, align: "center", filter: true },
+          { prop: "status", label: "状态", width: 170, align: "center", filter: true },
+          { prop: "info", label: "信息", width: "auto", align: "left", filter: true }
+        ],
+        detail: [
+          { prop: "index", label: "序号", width: 80, align: "center", filter: false },
+          { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+          { prop: "countyCode", label: "区县代码", width: 120, align: "center", filter: true },
+          { prop: "countyName", label: "区县名称", width: 120, align: "center", filter: true },
+          { prop: "cityCode", label: "地市代码", width: 120, align: "center", filter: true },
+          { prop: "cityName", label: "地市名称", width: 120, align: "center", filter: true },
+          { prop: "provinceCode", label: "省级代码", width: 120, align: "center", filter: true },
+          { prop: "provinceName", label: "省级名称", width: 120, align: "center", filter: true },
+          { prop: "ruleCode", label: "规则代码", width: 120, align: "center", filter: true },
+          { prop: "ruleName", label: "规则", width: 170, align: "center", filter: true },
+          { prop: "checkResult", label: "质检结果", width: 170, align: "center", filter: true },
+          { prop: "checkInfo", label: "质检信息", width: 170, align: "center", filter: true },
+          { prop: "finalResult", label: "结果信息", width: "auto", align: "left", filter: true }
+        ],
+        fail: [
+          { prop: "index", label: "序号", width: 80, align: "center", filter: false },
+          { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+          { prop: "countyCode", label: "区县代码", width: 150, align: "center", filter: true },
+          { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
+          { prop: "cityCode", label: "地市代码", width: 150, align: "center", filter: true },
+          { prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true },
+          { prop: "provinceCode", label: "省级代码", width: 150, align: "center", filter: true },
+          { prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true },
+          { prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true },
+          { prop: "ruleName", label: "规则", width: 170, align: "center", filter: true },
+          { prop: "tbbh", label: "图斑编号", width: 170, align: "center", filter: true },
+          { prop: "finalResult", label: "结果信息", width: "auto", align: "left", filter: true }
+        ]
+      },
       originData: [],
       tableData: [],
       centerDialogVisible: false,
@@ -92,13 +119,28 @@ export default {
         curValue: ""
       },
       isExpand: false,
-      tableHeight: 300
+      tableHeight: 300,
+      activeName: "overview"
     };
   },
   methods: {
     showDialog() {
       this.isExpand = false;
       this.centerDialogVisible = true;
+    },
+    handleTabChange(tab, event) {
+      this.searchText = "";
+      this.columns = this.columnInfo[this.activeName];
+      this.originData = qualityCheck()[this.activeName];
+      this.filterInfo.options = this.columns
+        .filter(item => item.filter)
+        .map(item => ({
+          value: item.prop,
+          label: item.label
+        }));
+      this.filterInfo.modelVal = this.filterInfo.options[0].label;
+      this.filterInfo.curValue = this.filterInfo.options[0].value;
+      this.getList();
     },
     selectChange(val) {
       this.filterInfo.curValue = val;
@@ -127,7 +169,7 @@ export default {
       // 3. 执行导出函数，系统会弹出弹框
       layExcel.exportExcel({
         sheet1: data
-      }, `${this.title}.xlsx`, "xlsx");
+      }, `${this.activeName}.xlsx`, "xlsx");
     }
   },
   computed: {},
@@ -141,7 +183,7 @@ export default {
 
 <style lang="less">
 
-#unzip-wrapper {
+#quality-check {
   .el-dialog {
     position: absolute;
     bottom: 0;
@@ -170,25 +212,9 @@ export default {
         display: flex;
         align-items: center;
 
-        .title {
-          font-size: 22px;
-          font-weight: bold;
-          margin-left: 10px;
-        }
-
         .search-wrap {
           width: 250px;
-          /*i{
-            width: 34px;
-            height: 34px;
-          }*/
         }
-
-        /*.search-input {
-          .el-input__inner {
-            height: 34px;
-          }
-        }*/
 
         .el-select {
           margin-left: 30px;

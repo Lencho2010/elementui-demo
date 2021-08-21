@@ -1,5 +1,5 @@
 <template>
-  <div id="unzip-wrapper">
+  <div id="result-check">
     <el-dialog ref="dialog"
                :visible.sync="centerDialogVisible"
                width="100%"
@@ -51,13 +51,13 @@
 </template>
 
 <script>
-import unzipData from "../../../test/unzipData";
+import resultCheck from "../../../test/resultCheck";
 import layExcel from "lay-excel";
 
 export default {
-  name: "UnzipDetail",
+  name: "ResultCheck",
   mounted() {
-    this.originData = unzipData();
+    this.originData = resultCheck();
     this.filterInfo.options = this.columns
       .filter(item => item.filter)
       .map(item => ({
@@ -70,17 +70,19 @@ export default {
   },
   data() {
     return {
-      title: "原始数据",
+      title: "成果检查",
       columns: [
         { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-        { prop: "dataName", label: "数据名称", width: 170, align: "center", filter: true },
-        { prop: "countyCode", label: "区县代码", width: 170, align: "center", filter: true },
-        { prop: "countyName", label: "区县名称", width: 170, align: "center", filter: true },
-        { prop: "cityCode", label: "地市代码", width: 170, align: "center", filter: true },
-        { prop: "cityName", label: "地市名称", width: 170, align: "center", filter: true },
-        { prop: "provinceCode", label: "省级代码", width: 170, align: "center", filter: true },
-        { prop: "provinceName", label: "省级名称", width: 170, align: "center", filter: true },
-        { prop: "dataPath", label: "路径", width: "auto", align: "left", filter: false }
+        { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+        { prop: "countyCode", label: "区县代码", width: 130, align: "center", filter: true },
+        { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
+        { prop: "cityCode", label: "地市代码", width: 130, align: "center", filter: true },
+        { prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true },
+        { prop: "provinceCode", label: "省级代码", width: 130, align: "center", filter: true },
+        { prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true },
+        { prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true },
+        { prop: "ruleName", label: "规则", width: 380, align: "center", filter: true },
+        { prop: "checkResult", label: "质检结果", width: "auto", align: "left", filter: true }
       ],
       originData: [],
       tableData: [],
@@ -141,7 +143,7 @@ export default {
 
 <style lang="less">
 
-#unzip-wrapper {
+#result-check {
   .el-dialog {
     position: absolute;
     bottom: 0;

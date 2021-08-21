@@ -95,13 +95,17 @@
             </el-button>
             <el-button v-if="scope.row.stepInfo==='成果检查'"
                        size="mini" style=""
-                       @click="handleDetail(scope.$index, scope.row)">标识例外
+                       @click="handleMarkException(scope.$index, scope.row)">标识例外
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <unzip-detail ref="unzip"></unzip-detail>
+    <quality-check ref="quality"></quality-check>
+    <fit-detail ref="fit"></fit-detail>
+    <result-check ref="check"></result-check>
+    <mark-exception ref="mark"></mark-exception>
   </div>
 </template>
 
@@ -109,11 +113,15 @@
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
 import UnzipDetail from "./detail/UnzipDetail";
+import QualityCheck from "./detail/QualityCheck";
+import FitDetail from "./detail/FitDetail";
+import ResultCheck from "./detail/ResultCheck";
+import MarkException from "./detail/MarkException";
 
 export default {
   name: "TaskDetail",
   props: ["taskName"],
-  components: { UnzipDetail },
+  components: { UnzipDetail, QualityCheck, FitDetail, ResultCheck, MarkException },
   mounted() {
     if (this.$parent) {
       this.$parent.showDetail = true;
@@ -129,7 +137,7 @@ export default {
     return {
       tableData: [],
       stepInfos: [
-        { name: "接受解压", value: "接受解压" },
+        { name: "接收解压", value: "接收解压" },
         { name: "质量检查", value: "质量检查" },
         { name: "套合对比", value: "套合对比" },
         { name: "成果检查", value: "成果检查" },
@@ -158,11 +166,26 @@ export default {
 
         this.tableData = taskDetail();
         this.isLoading = false;
-      }, 2000);
+      }, 500);
     },
     handleDetail(index, row) {
-      console.log(index, row);
-      this.$refs.unzip.showDialog();
+      switch (row.key) {
+        case "接收解压":
+          this.$refs.unzip.showDialog();
+          break;
+        case "质量检查":
+          this.$refs.quality.showDialog();
+          break;
+        case "套合对比":
+          this.$refs.fit.showDialog();
+          break;
+        case "成果检查":
+          this.$refs.check.showDialog();
+          break;
+      }
+    },
+    handleMarkException(index, row) {
+      this.$refs.mark.showDialog();
     },
     handleRestart(cmd) {
       if (!this.currentRow) return;
