@@ -28,13 +28,13 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="table-wrapper">
-      <el-table ref="table"
+    <div ref="wrapper" class="table-wrapper">
+      <el-table ref="table" :height="tableHeight"
                 v-loading="isLoading"
                 :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
                 :data="tableData" :show-header="true"
-                highlight-current-row
                 @current-change="handleCurrentChange"
+                @expand-change="handleExpandChange"
                 style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -110,6 +110,7 @@
 </template>
 
 <script>
+let erd = require("element-resize-detector")();
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
 import UnzipDetail from "./detail/UnzipDetail";
@@ -127,6 +128,18 @@ export default {
       this.$parent.showDetail = true;
     }
     this.gainData(this.taskName);
+    this.$nextTick(() => {
+      let timer;
+      let that = this;
+      let lisDom = document.getElementById("app");
+      erd.listenTo(lisDom, function(element) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          that.tableHeight = lisDom.clientHeight - 207;
+          console.log(that.tableHeight);
+        }, 500);
+      });
+    });
   },
   beforeDestroy() {
     if (this.$parent) {
@@ -152,7 +165,8 @@ export default {
         endTime: "-",
         detailInfo: []
       },
-      isLoading: false
+      isLoading: false,
+      tableHeight: "100%"
     };
   },
   methods: {
@@ -163,8 +177,9 @@ export default {
         this.taskInfo.tbCount = Math.floor((Math.random() * 100) + 3000);
         this.taskInfo.startTime = date2str(this.gainTaskStartTime(), "yyyy-MM-dd hh:mm:ss");
         this.taskInfo.endTime = date2str(new Date(), "yyyy-MM-dd hh:mm:ss");
-
-        this.tableData = taskDetail();
+        const retData = taskDetail();
+        retData.forEach(item => item.children.forEach(c => c.key = item.key + c.key));
+        this.tableData = retData;//taskDetail();
         this.isLoading = false;
       }, 500);
     },
@@ -192,7 +207,6 @@ export default {
       console.log("handleRestart....", cmd);
     },
     gainStatus(status) {
-      console.log("status:", status);
       let ret = "";
       switch (status) {
         case 0:
@@ -223,12 +237,14 @@ export default {
       this.currentRow = val;
     },
     handleExpand() {
-      if (!this.currentRow) return;
-      this.$refs.table.toggleRowExpansion(this.currentRow, true);
+      this.tableData.forEach(row => this.$refs.table.toggleRowExpansion(row, true));
+      /*if (!this.currentRow) return;
+      this.$refs.table.toggleRowExpansion(this.currentRow, true);*/
     },
     handleFold() {
-      if (!this.currentRow) return;
-      this.$refs.table.toggleRowExpansion(this.currentRow, false);
+      this.tableData.forEach(row => this.$refs.table.toggleRowExpansion(row, false));
+      /*if (!this.currentRow) return;
+      this.$refs.table.toggleRowExpansion(this.currentRow, false);*/
     },
     gainTaskStartTime() {
       const randomNum = Math.floor((Math.random() * 10) + 1);
@@ -237,6 +253,19 @@ export default {
       now.setMinutes((now.getMinutes() - randomNum));
       now.setSeconds((now.getSeconds() - randomNum));
       return now;
+    },
+    handleExpandChange(row, allRows) {
+      if (allRows.length > 0 && allRows[allRows.length - 1] == row) {
+        console.log("expand......");
+        // row.children.splice(0, row.children.length);
+
+      } else {
+        console.log("fold......");
+      }
+    },
+    gainRowKey(row) {
+      console.log(row);
+      return row.key || row.stepInfo;
     }
   }
 };
@@ -284,6 +313,7 @@ export default {
 
 .table-wrapper {
   border: 1px solid #f0f0f0;
+  margin-bottom: 5px;
   flex: 1;
 }
 
