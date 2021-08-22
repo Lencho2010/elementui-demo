@@ -8,7 +8,13 @@ module.exports = {
   lintOnSave: false, //关闭语法检查
   //开启代理服务器（方式一）
   devServer: {
-    proxy: 'http://localhost:3000'
+    // proxy: 'http://localhost:8001'
+    proxy: {
+      "/api": {
+        target: "http://localhost:8001",
+        pathRewrite: { "^/api": "" }
+      }
+    }
   },
   //开启代理服务器（方式二）
   /*devServer: {

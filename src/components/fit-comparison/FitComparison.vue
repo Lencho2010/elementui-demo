@@ -37,7 +37,7 @@
                   :data="tableData"
                   v-loading="isLoading"
                   :highlight-current-row="true"
-                  :header-cell-style="{backgroundColor:'#f0f0f0'}"
+                  :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
                   style="width: 100%">
           <el-table-column
             label="序号" width="80"
@@ -130,9 +130,9 @@ export default {
     // this.createTaskInfos();
     this.showDetail = false;
     this.isLoading = true;
-    setTimeout(()=>{
+    setTimeout(() => {
       this.isLoading = false;
-    },2500)
+    }, 2500);
     this.intervalList();
   },
   beforeDestroy() {
@@ -155,7 +155,7 @@ export default {
       },
       pageInfo: {
         currentPage: 1,
-        totalCount: 385,
+        totalCount: 0,
         pageSizes: [5, 10, 13],
         pageSize: 10
       },
@@ -200,7 +200,6 @@ export default {
       this.getList();
     },
     gainStatus(status) {
-      console.log("status:", status);
       let ret = "";
       switch (status) {
         case 0:
@@ -341,16 +340,32 @@ export default {
         num
       };
     },
-    createTaskInfos() {
-      const dataList = [];
+    async createTaskInfos() {
       const startIndex = (this.pageInfo.currentPage - 1) * this.pageInfo.pageSize + 1;
       const count = this.pageInfo.pageSize;
+
+      /*const dataList = [];
       for (let i = startIndex; i < startIndex + count; i++) {
         const task = this.createTaskInfo(i);
         dataList.push(task);
       }
+      this.pageInfo.totalCount = 360;
       this.originData = dataList;
-      this.getList();
+      this.getList();*/
+
+      const countUrl = window.g.url_checkResultTotalCount;
+      const { data: resCount } = await this.$http.get(countUrl);
+      const { data: totalCount } = resCount;
+      this.pageInfo.totalCount = totalCount;
+      const listUrl = window.g.url_checkResultTotalList;
+      const { data: result } = await this.$http.get(`${listUrl}/${startIndex}/${count}`);
+      const { code, message, data } = result;
+      if (code >= 200 && code < 300) {
+        this.originData = data;
+        this.getList();
+      } else {
+        this.$message.error(message);
+      }
     },
     intervalList() {
       let that = this;
