@@ -341,6 +341,23 @@ export default {
       };
     },
     async createTaskInfos() {
+      const page = this.pageInfo.currentPage;
+      const rows = this.pageInfo.pageSize;
+
+      const listUrl = window.g.url_checkResultSelectByStatus;
+      const { data: result } = await this.$http.get(`${listUrl}/${page}/${rows}`);
+      const { code, message, data } = result;
+      if (code >= 200 && code < 300) {
+        console.log(data);
+        const { list, total } = data;
+        this.pageInfo.totalCount = total;
+        this.originData = list;
+        this.getList();
+      } else {
+        this.$message.error(message);
+      }
+    },
+    async createTaskInfos_bak() {
       const startIndex = (this.pageInfo.currentPage - 1) * this.pageInfo.pageSize + 1;
       const count = this.pageInfo.pageSize;
 
