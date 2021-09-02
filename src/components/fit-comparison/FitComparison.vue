@@ -11,10 +11,10 @@
           </el-radio-group>
           <div class="search-wrap fl" style="margin-left: 50px">
             <el-input
-              class="search-input radius"
-              v-model="searchText"
-              placeholder="请输入"
-              @keyup.enter.native="getList"></el-input>
+                class="search-input radius"
+                v-model="searchText"
+                placeholder="请输入"
+                @keyup.enter.native="getList"></el-input>
             <i @click="getList"></i>
           </div>
 
@@ -40,12 +40,12 @@
                   :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
                   style="width: 100%">
           <el-table-column
-            label="序号" width="80"
-            prop="index">
+              label="序号" width="80"
+              prop="index">
           </el-table-column>
           <el-table-column
-            label="任务名称"
-            prop="taskName">
+              label="任务名称"
+              prop="taskName">
             <template slot-scope="scope">
               <span class="task-name">{{ scope.row.taskName }}</span>
             </template>
@@ -65,16 +65,16 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="开始时间"
-            prop="startTime">
+              label="开始时间"
+              prop="startTime">
           </el-table-column>
           <el-table-column
-            label="结束时间" el-progress
-            prop="endTime">
+              label="结束时间" el-progress
+              prop="endTime">
           </el-table-column>
           <el-table-column
-            label="创建者" width="100"
-            prop="creator">
+              label="创建者" width="100"
+              prop="creator">
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
@@ -87,9 +87,9 @@
                          @click="handleEdit(scope.$index, scope.row)">{{ gainButtonText(scope.row.status) }}
               </el-button>
               <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.$index, scope.row)">删除
               </el-button>
             </template>
           </el-table-column>
@@ -102,14 +102,14 @@
           <el-button class="btn-normal" @click="handleConfig">设置</el-button>
         </p>
         <el-pagination
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="pageInfo.currentPage"
-          :page-sizes="pageInfo.pageSizes"
-          :page-size="pageInfo.pageSize"
-          layout="total,  prev, pager, next, sizes, jumper"
-          :total="pageInfo.totalCount">
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageInfo.currentPage"
+            :page-sizes="pageInfo.pageSizes"
+            :page-size="pageInfo.pageSize"
+            layout="total,  prev, pager, next, sizes, jumper"
+            :total="pageInfo.totalCount">
         </el-pagination>
       </div>
       <config-service ref="conf"></config-service>
@@ -121,10 +121,11 @@
 <script>
 import ConfigService from "./ConfigService";
 import date2str from "../../util/date2str";
+import {fitList} from "@/api/fit/fit";
 
 export default {
   name: "FitComparison",
-  components: { ConfigService },
+  components: {ConfigService},
   mounted() {
     // this.statusChange(this.menus.selectStatus);
     // this.createTaskInfos();
@@ -146,11 +147,11 @@ export default {
       menus: {
         selectStatus: "all",
         statusList: [
-          { value: "all", list: [-1, 0, 1, 2, 3], label: "全部任务" },
-          { value: "0", list: [0], label: "待执行" },
-          { value: "2", list: [2], label: "执行中" },
-          { value: "1", list: [1], label: "执行成功" },
-          { value: "-1", list: [-1], label: "执行失败" }
+          {value: "all", list: [-1, 0, 1, 2, 3], label: "全部任务"},
+          {value: "0", list: [0], label: "待执行"},
+          {value: "2", list: [2], label: "执行中"},
+          {value: "1", list: [1], label: "执行成功"},
+          {value: "-1", list: [-1], label: "执行失败"}
         ]
       },
       pageInfo: {
@@ -170,7 +171,7 @@ export default {
     handleDetail(index, row) {
       // this.showDetail = true;
       // this.$router.push({ name: "task-detail" }); //"/fit-comparison/task-detail"
-      this.$router.push({ path: `/fit-comparison/task-detail/${row.taskName}` }); //"/fit-comparison/task-detail"
+      this.$router.push({path: `/fit-comparison/task-detail/${row.taskName}`}); //"/fit-comparison/task-detail"
     },
     handleEdit(index, row) {
       console.log(index, row);
@@ -194,7 +195,7 @@ export default {
         });
       });
     },
-    deleteTask({ taskName }) {
+    deleteTask({taskName}) {
       const index = this.originData.findIndex(item => item.taskName === taskName);
       this.originData.splice(index, 1);
       this.getList();
@@ -223,7 +224,7 @@ export default {
       }
       return ret;
     },
-    cellStyle({ row, column, rowIndex, columnIndex }) {
+    cellStyle({row, column, rowIndex, columnIndex}) {
       if (column.property !== "status") return;
       let ret = "";
       switch (row.status) {
@@ -268,13 +269,13 @@ export default {
     },
     handleSizeChange(val) {
       this.pageInfo.pageSize = val;
-      const { currentPage: curPage, pageSize } = this.pageInfo;
+      const {currentPage: curPage, pageSize} = this.pageInfo;
       console.log("curPage:pageSize----->", curPage, pageSize);
       this.createTaskInfos();
     },
     handleCurrentChange(val) {
       this.pageInfo.currentPage = val;
-      const { currentPage: curPage, pageSize } = this.pageInfo;
+      const {currentPage: curPage, pageSize} = this.pageInfo;
       console.log("curPage:pageSize----->", curPage, pageSize);
       this.createTaskInfos();
     },
@@ -288,7 +289,7 @@ export default {
       return typeof obj == "undefined" || obj == null || obj === "";
     },
     statusChange(value) {
-      const { list } = this.menus.statusList.find(item => item.value === value);
+      const {list} = this.menus.statusList.find(item => item.value === value);
       this.tableData = this.originData.filter(item => {
         const keyword = this.searchText.trim();
         if (keyword === "")
@@ -340,16 +341,27 @@ export default {
         num
       };
     },
-    async createTaskInfos() {
+    createTaskInfos() {
+      const page = this.pageInfo.currentPage;
+      const rows = this.pageInfo.pageSize;
+
+      fitList(page, rows, null).then(({data}) => {
+        const {list, total} = data;
+        this.pageInfo.totalCount = total;
+        this.originData = list;
+        this.getList();
+      })
+    },
+    async createTaskInfos_bak2() {
       const page = this.pageInfo.currentPage;
       const rows = this.pageInfo.pageSize;
 
       const listUrl = window.g.url_checkResultSelectByStatus;
-      const { data: result } = await this.$http.get(`${listUrl}/${page}/${rows}`);
-      const { code, message, data } = result;
+      const {data: result} = await this.$http.get(`${listUrl}/${page}/${rows}`);
+      const {code, message, data} = result;
       if (code >= 200 && code < 300) {
         console.log(data);
-        const { list, total } = data;
+        const {list, total} = data;
         this.pageInfo.totalCount = total;
         this.originData = list;
         this.getList();
@@ -361,32 +373,18 @@ export default {
       const startIndex = (this.pageInfo.currentPage - 1) * this.pageInfo.pageSize + 1;
       const count = this.pageInfo.pageSize;
 
-      /*const dataList = [];
+      const dataList = [];
       for (let i = startIndex; i < startIndex + count; i++) {
         const task = this.createTaskInfo(i);
         dataList.push(task);
       }
       this.pageInfo.totalCount = 360;
       this.originData = dataList;
-      this.getList();*/
-
-      const countUrl = window.g.url_checkResultTotalCount;
-      const { data: resCount } = await this.$http.get(countUrl);
-      const { data: totalCount } = resCount;
-      this.pageInfo.totalCount = totalCount;
-      const listUrl = window.g.url_checkResultTotalList;
-      const { data: result } = await this.$http.get(`${listUrl}/${startIndex}/${count}`);
-      const { code, message, data } = result;
-      if (code >= 200 && code < 300) {
-        this.originData = data;
-        this.getList();
-      } else {
-        this.$message.error(message);
-      }
+      this.getList();
     },
     intervalList() {
       let that = this;
-      this.intervalItem = setInterval(function() {
+      this.intervalItem = setInterval(function () {
         // that.getList();
         if (that.autoRefresh)
           that.createTaskInfos();

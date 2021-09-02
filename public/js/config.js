@@ -1,6 +1,5 @@
 const baseUrl = "/api/webstore";
 
-const clusterUrl = ["172.16.15.243:8067", "172.16.15.243:8068"];
 window.g = {
   root: baseUrl,
   activeLogin: false,
