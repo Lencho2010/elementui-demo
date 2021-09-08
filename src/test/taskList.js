@@ -6,7 +6,7 @@ export default function() {
     startTime: "2021-05-04 21:00:00",
     endTime: "2021-05-05 11:35:00",
     creator: "admin",
-    num: 50
+    progress: 50
   }, {
     index: 2,
     taskName: "2021S105300020",
@@ -14,7 +14,7 @@ export default function() {
     startTime: "2021-05-04 21:00:00",
     endTime: "2021-05-05 11:35:00",
     creator: "admin",
-    num: 80
+    progress: 80
   }, {
     index: 3,
     taskName: "2021S105300030",
@@ -22,7 +22,7 @@ export default function() {
     startTime: "2021-05-04 21:00:00",
     endTime: "2021-05-05 11:35:00",
     creator: "admin",
-    num: 30
+    progress: 30
   }, {
     index: 4,
     taskName: "2021S105300040",
@@ -30,7 +30,7 @@ export default function() {
     startTime: "2021-05-04 21:00:00",
     endTime: "2021-05-05 11:35:00",
     creator: "admin",
-    num: 60
+    progress: 60
   }, {
     index: 5,
     taskName: "2021S105300040",
@@ -38,7 +38,7 @@ export default function() {
     startTime: "2021-05-04 21:00:00",
     endTime: "2021-05-05 11:35:00",
     creator: "admin",
-    num: 60
+    progress: 60
   }];
 
 }
