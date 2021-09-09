@@ -19,7 +19,9 @@
         <el-button class="btn-normal" @click="handleExpand">展开节点</el-button>
         <el-button class="btn-normal" @click="handleFold">折叠节点</el-button>
         <!-- <el-button class="btn-normal" @click="">重启</el-button>-->
-        <el-dropdown style="margin-left: 10px" @command="handleRestart">
+        <el-dropdown style="margin-left: 10px;"
+                     :style="{display:this.taskInfo.status==-1?'block':'none'}"
+                     @command="handleRestart">
           <el-button class="btn-normal" @click="">重启</el-button>
           <el-dropdown-menu slot="dropdown">
             <span style="margin: 1px">请选择从哪一步开始执行</span>
@@ -111,6 +113,8 @@
 
 <script>
 let erd = require("element-resize-detector")();
+import { findOne } from "../../api/fit/fit.js";
+import { listTaskInfo } from "../../api/fit/taskInfo.js";
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
 import UnzipDetail from "./detail/UnzipDetail";
@@ -159,6 +163,7 @@ export default {
       ],
       currentRow: null,
       taskInfo: {
+        status: 2,
         taskName: "",
         tbCount: 0,
         startTime: "-",
@@ -170,9 +175,22 @@ export default {
     };
   },
   methods: {
-    gainData(tName) {
+    async gainData(tName) {
       this.isLoading = true;
-      setTimeout(() => {
+      const { data } = await findOne(tName);
+      const { id, taskName, startTime, endTime, tbCount, status } = data;
+      Object.assign(this.taskInfo, data);
+
+      const { data: retData } = await listTaskInfo(taskName);
+      this.tableData = retData;
+      this.isLoading = false;
+
+      /*const retData = taskDetail();
+      retData.forEach(item => item.children.forEach(c => c.key = item.key + c.key));
+      this.tableData = retData;//taskDetail();
+      this.isLoading = false;*/
+
+      /*setTimeout(() => {
         this.taskInfo.taskName = tName;
         this.taskInfo.tbCount = Math.floor((Math.random() * 100) + 3000);
         this.taskInfo.startTime = date2str(this.gainTaskStartTime(), "yyyy-MM-dd hh:mm:ss");
@@ -181,17 +199,19 @@ export default {
         retData.forEach(item => item.children.forEach(c => c.key = item.key + c.key));
         this.tableData = retData;//taskDetail();
         this.isLoading = false;
-      }, 500);
+      }, 500);*/
     },
     handleDetail(index, row) {
-      switch (row.key) {
+      console.log(row);
+      const taskName = row.taskName;
+      switch (row.stepInfo) {
         case "接收解压":
-          this.$refs.unzip.showDialog();
+          this.$refs.unzip.showDialog(taskName);
           break;
         case "质量检查":
           this.$refs.quality.showDialog();
           break;
-        case "套合对比":
+        case "套合比对":
           this.$refs.fit.showDialog();
           break;
         case "成果检查":

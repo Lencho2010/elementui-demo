@@ -52,6 +52,7 @@
 
 <script>
 import unzipData from "../../../test/unzipData";
+import { listUnzipData } from "../../../api/fit/taskInfo.js";
 import layExcel from "lay-excel";
 
 export default {
@@ -96,9 +97,14 @@ export default {
     };
   },
   methods: {
-    showDialog() {
-      this.isExpand = false;
-      this.centerDialogVisible = true;
+    showDialog(taskName) {
+      listUnzipData(taskName).then(({ data }) => {
+        this.isExpand = false;
+        this.centerDialogVisible = true;
+        this.originData = data;
+        this.getList();
+      })
+        .catch(err => this.$message.error(err));
     },
     selectChange(val) {
       this.filterInfo.curValue = val;

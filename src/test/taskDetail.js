@@ -89,7 +89,7 @@ export default function() {
       key: "1",
       stepInfo: "与土地利用现状数据套合比对",
       status: 1,
-      logInfo: "共300个要素进行套合比对，其中300个要素天河比对通过",
+      logInfo: "共300个要素进行套合比对，其中300个要素套合比对通过",
       consumeTime: "10min"
     }, {
       key: "2",

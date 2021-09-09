@@ -21,3 +21,8 @@ export function updateStatus(id, status) {
     id, status
   });
 }
+
+export function findOne(taskName) {
+  let url = `/zipFileInfo/select/${taskName}`;
+  return request.get(url);
+}
