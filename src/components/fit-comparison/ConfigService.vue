@@ -20,7 +20,14 @@
       </div>
       <div style="display: flex; margin-top: 20px; align-items: center">
         <span style="font-size: 16px">扫描周期：</span>
-        <el-input style="width: 210px" v-model="inputNum" placeholder="请输入"></el-input>
+        <!--        <el-input style="width: 210px"
+                          v-model="inputNum"
+                          placeholder="请输入"></el-input>-->
+        <el-input-number style="width: 210px"
+                         v-model="inputNum"
+                         controls-position="right"
+                         @change="handleChange"
+                         :min="1" :max="999"></el-input-number>
         <span style="width: 20px"></span>
         <el-select v-model="timeUnit.value" placeholder="" style="width: 170px">
           <el-option
@@ -40,16 +47,29 @@
 </template>
 
 <script>
+
+import {
+  gainScanPaths,
+  gainScanPath,
+  updateScanPath,
+  gainScanInterval,
+  updateScanInterval,
+  updateScanPathAndInterval
+} from "@/api/fit/sysPara.js";
+
 export default {
   name: "ConfigService",
+  mounted() {
+    this.init();
+  },
   data() {
     return {
       centerDialogVisible: false,
       timeUnit: {
-        value: "hour",
+        value: "min",
         options: [
-          { value: "day", label: "天" },
-          { value: "hour", label: "小时" },
+          //{ value: "day", label: "天" },
+          //{ value: "hour", label: "小时" },
           { value: "min", label: "分钟" }
         ]
       },
@@ -57,31 +77,48 @@ export default {
       scanPath: {
         value: "",
         options: [
-          { value: "http://www.github.com", label: "http://www.github.com" },
-          { value: "http://www.baidu.com", label: "http://www.github.com" },
-          { value: "http://www.google.com", label: "http://www.github.com" }
+          /*{ value: "http://www.github.com", label: "http://www.github.com" },
+          { value: "http://www.baidu.com", label: "http://www.baidu.com" },
+          { value: "http://www.google.com", label: "http://www.google.com" }*/
         ]
       },
       isLoading: false
     };
   },
   methods: {
+    async init() {
+      const { data } = await gainScanPaths();
+      const paths = JSON.parse(data);
+      paths.forEach((item, index) => this.scanPath.options.push({ value: item, label: item }));
+
+      const { data: scanPath } = await gainScanPath();
+      this.scanPath.value = scanPath;
+
+      const { data: scanInterval } = await gainScanInterval();
+      this.inputNum = scanInterval;
+    },
+    handleChange(value) {
+      console.log(value);
+    },
     showDialog() {
       this.centerDialogVisible = true;
     },
-    handleOk() {
+    async handleOk() {
       this.isLoading = true;
-      setTimeout(() => {
-        this.$message.warning("请输入正确的配置信息...");
+      const { data: ret1 } = await updateScanPath(this.scanPath.value);
+      const { data: ret2 } = await updateScanInterval(this.inputNum);
+      this.isLoading = false;
+      if (ret1 && ret2) {
+        this.centerDialogVisible = false;
+        this.$message.success("保存配置成功！");
+      } else {
         this.isLoading = false;
-      }, 2000);
-
-      /*this.centerDialogVisible = false;
-      this.$message.success("保存配置成功！")*/
-
+        this.$message.error("保存配置失败！");
+      }
     }
   }
 };
+
 </script>
 
 <style>

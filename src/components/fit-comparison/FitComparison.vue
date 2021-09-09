@@ -98,7 +98,8 @@
       <div class="footer">
         <p>
           <span>服务程序：</span>
-          <el-button class="btn-normal" @click="handlePause">暂停</el-button>
+          <el-button class="btn-normal" :loading="isConfigLoading" @click="handlePause">{{ isPause ? "启动" : "暂停" }}
+          </el-button>
           <el-button class="btn-normal" @click="handleConfig">设置</el-button>
         </p>
         <el-pagination
@@ -121,7 +122,8 @@
 <script>
 import ConfigService from "./ConfigService";
 import date2str from "../../util/date2str";
-import { fitList,del } from "@/api/fit/fit";
+import { fitList, del } from "@/api/fit/fit";
+import { gainServiceStatus, updateServiceStatus } from "@/api/fit/sysPara.js";
 
 export default {
   name: "FitComparison",
@@ -131,6 +133,7 @@ export default {
     this.isLoading = true;
     this.getList();
     this.intervalList();
+    this.init();
   },
   beforeDestroy() {
     this.cancel();
@@ -158,12 +161,19 @@ export default {
       },
       intervalItem: 0,
       interval: 3000,
+      isPause: true,
       autoRefresh: false,
       showDetail: false,
-      isLoading: false
+      isLoading: false,
+      isConfigLoading: false
     };
   },
   methods: {
+    init() {
+      gainServiceStatus().then(({ data }) => {
+        this.isPause = data === "0";
+      });
+    },
     handleDetail(index, row) {
       // this.showDetail = true;
       // this.$router.push({ name: "task-detail" }); //"/fit-comparison/task-detail"
@@ -180,14 +190,14 @@ export default {
         type: "warning"
       }).then(() => {
         del(row.id).then(({ data }) => {
-          if(data) this.getList();
+          if (data) this.getList();
           this.$message({
             type: "success",
             message: "删除成功!"
           });
         }).catch(err => {
           this.$message.error(err);
-        })
+        });
       }).catch(() => {
         this.$message({
           type: "info",
@@ -266,19 +276,30 @@ export default {
       this.pageInfo.pageSize = val;
       const { currentPage: curPage, pageSize } = this.pageInfo;
       console.log("curPage:pageSize----->", curPage, pageSize);
-      this.createTaskInfos();
+      this.getList();
     },
     handleCurrentChange(val) {
       this.pageInfo.currentPage = val;
       const { currentPage: curPage, pageSize } = this.pageInfo;
       console.log("curPage:pageSize----->", curPage, pageSize);
-      this.createTaskInfos();
+      this.getList();
     },
     handleConfig() {
       this.$refs.conf.showDialog();
     },
     handlePause() {
-
+      this.isConfigLoading = true;
+      this.isPause = !this.isPause;
+      updateServiceStatus(this.isPause ? 0 : 1).then(({ data }) => {
+        this.isConfigLoading = false;
+        if (data) {
+          this.$message.success(`服务已${this.isPause ? "暂停" : "启动"}`);
+        }
+      }).catch(err => {
+        this.isConfigLoading = false;
+        this.isPause = !this.isPause;
+        this.$message.error(`服务${!this.isPause ? "暂停" : "启动"}失败`);
+      });
     },
     statusChange(value) {
       this.getList();
