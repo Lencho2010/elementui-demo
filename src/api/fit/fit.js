@@ -14,3 +14,10 @@ export function del(id) {
   let url = `/zipFileInfo/delete/${id}`;
   return request.delete(url);
 }
+
+export function updateStatus(id, status) {
+  let url = `/zipFileInfo/updateStatus`;
+  return request.put(url, {
+    id, status
+  });
+}

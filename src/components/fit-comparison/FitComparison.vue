@@ -82,10 +82,24 @@
                          size="mini"
                          @click="handleDetail(scope.$index, scope.row)">详情
               </el-button>
-              <el-button :class="[{'hidden-column':scope.row.status===1}]"
+              <!--<el-button :class="[{'hidden-column':scope.row.status===1}]"
                          size="mini"
                          @click="handleEdit(scope.$index, scope.row)">{{ gainButtonText(scope.row.status) }}
-              </el-button>
+              </el-button>-->
+              <el-popover
+                placement="top"
+                width="170"
+                v-model="scope.row.visible">
+                <p>确定要执行此操作吗？</p>
+                <p></p>
+                <div style="text-align: right; margin: 0">
+                  <el-button size="mini" type="text" @click="scope.row.visible = false">取消</el-button>
+                  <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">确定</el-button>
+                </div>
+                <el-button :class="[{'hidden-column':scope.row.status===1}]" size="mini" slot="reference">
+                  {{ gainButtonText(scope.row.status) }}
+                </el-button>
+              </el-popover>
               <el-button
                 size="mini"
                 type="danger"
@@ -122,7 +136,7 @@
 <script>
 import ConfigService from "./ConfigService";
 import date2str from "../../util/date2str";
-import { fitList, del } from "@/api/fit/fit";
+import { fitList, del, updateStatus } from "@/api/fit/fit";
 import { gainServiceStatus, updateServiceStatus } from "@/api/fit/sysPara.js";
 
 export default {
@@ -165,7 +179,8 @@ export default {
       autoRefresh: false,
       showDetail: false,
       isLoading: false,
-      isConfigLoading: false
+      isConfigLoading: false,
+      visible: false
     };
   },
   methods: {
@@ -179,8 +194,24 @@ export default {
       // this.$router.push({ name: "task-detail" }); //"/fit-comparison/task-detail"
       this.$router.push({ path: `/fit-comparison/task-detail/${row.taskName}` }); //"/fit-comparison/task-detail"
     },
+    gainTargetStatus(status) {
+      switch (status) {
+        case -1:
+        case 3:
+        case 0:
+          return 2;
+        case 2:
+          return 3;
+      }
+    },
     handleEdit(index, row) {
-      console.log(index, row);
+      row.visible = false;
+      const { id, status } = row;
+      const targetStatus = this.gainTargetStatus(status);
+      updateStatus(id, targetStatus).then(({ data }) => {
+        row.status = targetStatus;
+        if (data) this.$message.success("操作成功");
+      });
     },
     handleDelete(index, row) {
       console.log(index, row);

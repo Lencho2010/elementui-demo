@@ -21,7 +21,6 @@ export function gainScanPath() {
 }
 
 export function updateScanPath(scanPath) {
-  console.log({ scanPath });
   let url = `/sysPara/scanPath`;
   return request({
     url,
