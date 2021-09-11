@@ -57,6 +57,7 @@
 <script>
 import layExcel from "lay-excel";
 import qualityCheck from "../../../test/qualityCheck";
+import { listCheckData } from "@/api/fit/checkInfo";
 
 export default {
   name: "QualityCheck",
@@ -120,7 +121,9 @@ export default {
       },
       isExpand: false,
       tableHeight: 300,
-      activeName: "overview"
+      activeName: "overview",
+      taskName: "2021S307210016",
+      cacheData: { "overview": [], "detail": [], "fail": [] }
     };
   },
   methods: {
@@ -131,7 +134,6 @@ export default {
     handleTabChange(tab, event) {
       this.searchText = "";
       this.columns = this.columnInfo[this.activeName];
-      this.originData = qualityCheck()[this.activeName];
       this.filterInfo.options = this.columns
         .filter(item => item.filter)
         .map(item => ({
@@ -140,7 +142,20 @@ export default {
         }));
       this.filterInfo.modelVal = this.filterInfo.options[0].label;
       this.filterInfo.curValue = this.filterInfo.options[0].value;
-      this.getList();
+
+      /*this.originData = qualityCheck()[this.activeName];
+      this.getList();*/
+      let activeData = this.cacheData[this.activeName];
+      if (activeData.length > 0) {
+        this.originData = activeData;
+        this.getList();
+      } else
+        listCheckData(this.activeName, this.taskName).then(({ data }) => {
+          console.log("request...");
+          this.cacheData[this.activeName] = data;
+          this.originData = data;
+          this.getList();
+        });
     },
     selectChange(val) {
       this.filterInfo.curValue = val;
