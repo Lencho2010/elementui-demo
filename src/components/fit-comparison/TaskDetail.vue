@@ -209,10 +209,10 @@ export default {
           this.$refs.unzip.showDialog(taskName);
           break;
         case "质量检查":
-          this.$refs.quality.showDialog();
+          this.$refs.quality.showDialog(taskName);
           break;
         case "套合比对":
-          this.$refs.fit.showDialog();
+          this.$refs.fit.showDialog(taskName);
           break;
         case "成果检查":
           this.$refs.check.showDialog();

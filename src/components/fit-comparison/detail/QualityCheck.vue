@@ -62,7 +62,7 @@ import { listCheckData } from "@/api/fit/checkInfo";
 export default {
   name: "QualityCheck",
   mounted() {
-    this.handleTabChange();
+    //this.handleTabChange();
   },
   data() {
     return {
@@ -122,14 +122,16 @@ export default {
       isExpand: false,
       tableHeight: 300,
       activeName: "overview",
-      taskName: "2021S307210016",
+      taskName: "",
       cacheData: { "overview": [], "detail": [], "fail": [] }
     };
   },
   methods: {
-    showDialog() {
+    showDialog(taskName) {
+      this.taskName = taskName;
       this.isExpand = false;
       this.centerDialogVisible = true;
+      this.handleTabChange();
     },
     handleTabChange(tab, event) {
       this.searchText = "";

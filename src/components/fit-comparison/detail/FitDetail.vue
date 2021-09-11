@@ -53,11 +53,11 @@
 <script>
 import fitDetail from "../../../test/fitDetail";
 import layExcel from "lay-excel";
+import { listFitResult } from "@/api/fit/fitDetail.js";
 
 export default {
   name: "FitDetail",
   mounted() {
-    this.originData = fitDetail();
     this.filterInfo.options = this.columns
       .filter(item => item.filter)
       .map(item => ({
@@ -66,7 +66,9 @@ export default {
       }));
     this.filterInfo.modelVal = this.filterInfo.options[0].label;
     this.filterInfo.curValue = this.filterInfo.options[0].value;
-    this.getList();
+
+    /*this.originData = fitDetail();
+    this.getList();*/
   },
   data() {
     return {
@@ -96,13 +98,20 @@ export default {
         curValue: ""
       },
       isExpand: false,
-      tableHeight: 300
+      tableHeight: 300,
+      taskName: ""
     };
   },
   methods: {
-    showDialog() {
+    showDialog(taskName) {
+      this.taskName = taskName;
       this.isExpand = false;
       this.centerDialogVisible = true;
+
+      listFitResult(this.taskName).then(({ data }) => {
+        this.originData = data;
+        this.getList();
+      });
     },
     selectChange(val) {
       this.filterInfo.curValue = val;
