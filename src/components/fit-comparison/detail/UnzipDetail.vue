@@ -52,7 +52,7 @@
 
 <script>
 import unzipData from "../../../test/unzipData";
-import { listUnzipData } from "../../../api/fit/taskInfo.js";
+import { listUnzipData } from "@/api/contrast/taskInfo";
 import layExcel from "lay-excel";
 
 export default {

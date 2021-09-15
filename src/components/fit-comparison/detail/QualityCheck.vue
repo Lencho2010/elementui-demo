@@ -57,7 +57,7 @@
 <script>
 import layExcel from "lay-excel";
 import qualityCheck from "../../../test/qualityCheck";
-import { listCheckData } from "@/api/fit/checkInfo";
+import { listCheckData } from "@/api/contrast/checkInfo";
 
 export default {
   name: "QualityCheck",

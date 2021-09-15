@@ -21,7 +21,7 @@ const routes = [
   /*{
     path: "/task-detail",
     name: "task-detail",
-    component: () => import("../components/fit-comparison/TaskDetail.vue")
+    component: () => import("../components/contrast-comparison/TaskDetail.vue")
   },*/
   {
     path: "/about",

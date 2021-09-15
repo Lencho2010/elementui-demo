@@ -53,7 +53,7 @@
 <script>
 import fitDetail from "../../../test/fitDetail";
 import layExcel from "lay-excel";
-import { listFitResult } from "@/api/fit/fitDetail.js";
+import { listFitResult } from "@/api/contrast/fitDetail.js";
 
 export default {
   name: "FitDetail",

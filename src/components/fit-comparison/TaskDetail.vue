@@ -113,8 +113,8 @@
 
 <script>
 let erd = require("element-resize-detector")();
-import { findOne } from "../../api/fit/jctbTask.js";
-import { listTaskInfo } from "../../api/fit/taskInfo.js";
+import { findOne } from "@/api/contrast/jctbTask.js";
+import { listTaskInfo } from "@/api/contrast/taskInfo.js";
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
 import UnzipDetail from "./detail/UnzipDetail";
@@ -213,7 +213,7 @@ export default {
           this.$refs.quality.showDialog(taskName);
           break;
         case "套合比对":
-          this.$refs.fit.showDialog(taskName);
+          this.$refs.contrast.showDialog(taskName);
           break;
         case "成果检查":
           this.$refs.check.showDialog();
@@ -266,7 +266,7 @@ export default {
       return ret;
     },
     goList() {
-      this.$router.push({ name: "fit-comparison" });
+      this.$router.push({ name: "contrast-comparison" });
     },
     handleCurrentChange(val) {
       this.currentRow = val;

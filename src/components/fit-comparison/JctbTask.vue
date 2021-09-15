@@ -136,8 +136,8 @@
 <script>
 import ConfigService from "./ConfigService";
 import date2str from "../../util/date2str";
-import { taskList, del, updateStatus } from "@/api/fit/jctbTask";
-import { gainServiceStatus, updateServiceStatus } from "@/api/fit/sysPara.js";
+import { taskList, del, updateStatus } from "@/api/contrast/jctbTask";
+import { gainServiceStatus, updateServiceStatus } from "@/api/contrast/sysPara.js";
 
 export default {
   name: "JctbTask",
@@ -191,8 +191,8 @@ export default {
     },
     handleDetail(index, row) {
       // this.showDetail = true;
-      // this.$router.push({ name: "task-detail" }); //"/fit-comparison/task-detail"
-      this.$router.push({ path: `/jctb-task/task-detail/${row.taskName}` }); //"/fit-comparison/task-detail"
+      // this.$router.push({ name: "task-detail" }); //"/contrast-comparison/task-detail"
+      this.$router.push({ path: `/jctb-task/task-detail/${row.taskName}` }); //"/contrast-comparison/task-detail"
     },
     gainTargetStatus(status) {
       switch (status) {

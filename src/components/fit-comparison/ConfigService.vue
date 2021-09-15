@@ -55,7 +55,7 @@ import {
   gainScanInterval,
   updateScanInterval,
   updateScanPathAndInterval
-} from "@/api/fit/sysPara.js";
+} from "@/api/contrast/sysPara.js";
 
 export default {
   name: "ConfigService",
