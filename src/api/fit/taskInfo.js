@@ -1,4 +1,4 @@
-import request from "../../util/request";
+import request from "@/util/request";
 
 export function listTaskInfoByCode(taskName) {
   let url = `/taskInfo/list/${taskName}`;
@@ -10,8 +10,13 @@ export function listSubTaskInfoByCode(taskName) {
   return request.get(url);
 }
 
-export function listTaskInfo(taskName){
+/*export function listTaskInfo(taskName){
   let url = `/taskInfo/list2/${taskName}`;
+  return request.get(url);
+}*/
+
+export function listTaskInfo(taskName){
+  let url = `/jctbTaskSub/list/${taskName}`;
   return request.get(url);
 }
 

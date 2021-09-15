@@ -4,7 +4,7 @@
       <div class="location-info">
         <span>当前位置：</span>
         <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size: 16px">
-          <el-breadcrumb-item :to="{ name: 'fit-comparison' }">套合比对</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ name: 'jctb-task' }">套合比对</el-breadcrumb-item>
           <el-breadcrumb-item>任务详情</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
@@ -57,7 +57,7 @@
                 </el-table-column>
                 <el-table-column width="700"
                                  label="日志"
-                                 prop="logInfo">
+                                 prop="log">
                 </el-table-column>
                 <el-table-column
                   label="耗时" align="center"
@@ -69,7 +69,7 @@
         </el-table-column>
         <el-table-column
           label="步骤" width="280"
-          prop="stepInfo">
+          prop="stepName">
         </el-table-column>
         <el-table-column
           label="状态" width="120"
@@ -95,7 +95,7 @@
               size="mini" style=""
               @click="handleDetail(scope.$index, scope.row)">查看
             </el-button>
-            <el-button v-if="scope.row.stepInfo==='成果检查'"
+            <el-button v-if="scope.row.stepCode===1004"
                        size="mini" style=""
                        @click="handleMarkException(scope.$index, scope.row)">标识例外
             </el-button>
@@ -183,7 +183,7 @@ export default {
       Object.assign(this.taskInfo, data);
 
       const { data: retData } = await listTaskInfo(taskName);
-      this.tableData = retData;
+      this.tableData = retData.sort((x, y) => x.stepCode - y.stepCode);
       this.isLoading = false;
 
       /*const retData = taskDetail();
@@ -205,7 +205,7 @@ export default {
     handleDetail(index, row) {
       console.log(row);
       const taskName = row.taskName;
-      switch (row.stepInfo) {
+      /*switch (row.stepInfo) {
         case "接收解压":
           this.$refs.unzip.showDialog(taskName);
           break;
@@ -216,6 +216,20 @@ export default {
           this.$refs.fit.showDialog(taskName);
           break;
         case "成果检查":
+          this.$refs.check.showDialog();
+          break;
+      }*/
+      switch (row.stepCode) {
+        case 1001:
+          this.$refs.unzip.showDialog(taskName);
+          break;
+        case 1002:
+          this.$refs.quality.showDialog(taskName);
+          break;
+        case 1003:
+          this.$refs.fit.showDialog(taskName);
+          break;
+        case 1004:
           this.$refs.check.showDialog();
           break;
       }
