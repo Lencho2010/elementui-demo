@@ -136,11 +136,11 @@
 <script>
 import ConfigService from "./ConfigService";
 import date2str from "../../util/date2str";
-import { fitList, del, updateStatus } from "@/api/fit/fit";
+import { taskList, del, updateStatus } from "@/api/fit/jctbTask";
 import { gainServiceStatus, updateServiceStatus } from "@/api/fit/sysPara.js";
 
 export default {
-  name: "FitComparison",
+  name: "JctbTask",
   components: { ConfigService },
   mounted() {
     this.showDetail = false;
@@ -192,7 +192,7 @@ export default {
     handleDetail(index, row) {
       // this.showDetail = true;
       // this.$router.push({ name: "task-detail" }); //"/fit-comparison/task-detail"
-      this.$router.push({ path: `/fit-comparison/task-detail/${row.taskName}` }); //"/fit-comparison/task-detail"
+      this.$router.push({ path: `/jctb-task/task-detail/${row.taskName}` }); //"/fit-comparison/task-detail"
     },
     gainTargetStatus(status) {
       switch (status) {
@@ -206,9 +206,9 @@ export default {
     },
     handleEdit(index, row) {
       row.visible = false;
-      const { id, status } = row;
+      const { taskName, status } = row;
       const targetStatus = this.gainTargetStatus(status);
-      updateStatus(id, targetStatus).then(({ data }) => {
+      updateStatus(taskName, targetStatus).then(({ data }) => {
         row.status = targetStatus;
         if (data) this.$message.success("操作成功");
       });
@@ -220,7 +220,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        del(row.id).then(({ data }) => {
+        del(row.taskName).then(({ data }) => {
           if (data) this.getList();
           this.$message({
             type: "success",
@@ -341,7 +341,7 @@ export default {
       const taskName = this.searchText;
       const { list: status } = this.menus.statusList.find(item => item.value === this.menus.selectStatus);
 
-      fitList(page, rows, taskName, status.join(",")).then(({ data }) => {
+      taskList(page, rows, taskName, status.join(",")).then(({ data }) => {
         const { list, total } = data;
         this.pageInfo.totalCount = total;
         this.originData = list;

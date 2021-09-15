@@ -113,7 +113,7 @@
 
 <script>
 let erd = require("element-resize-detector")();
-import { findOne } from "../../api/fit/fit.js";
+import { findOne } from "../../api/fit/jctbTask.js";
 import { listTaskInfo } from "../../api/fit/taskInfo.js";
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
@@ -128,6 +128,7 @@ export default {
   props: ["taskName"],
   components: { UnzipDetail, QualityCheck, FitDetail, ResultCheck, MarkException },
   mounted() {
+    console.log("taskDetail init...");
     if (this.$parent) {
       this.$parent.showDetail = true;
     }

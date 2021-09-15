@@ -1,10 +1,10 @@
-import FitComparison from "../components/fit-comparison/FitComparison";
+import JctbTask from "../components/fit-comparison/JctbTask";
 import TaskDetail from "../components/fit-comparison/TaskDetail";
 
 export default {
-  path: "/fit-comparison",
-  name: "fit-comparison",
-  component: FitComparison,
+  path: "/jctb-task",
+  name: "jctb-task",
+  component: JctbTask,
   children: [
     {
       path: "task-detail/:taskName",

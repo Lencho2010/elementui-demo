@@ -28,7 +28,7 @@ export default {
       }, {
         key: 1003,
         name: "套合比对",
-        route: "/fit-comparison"
+        route: "/jctb-task"
       }],
       activeIndex: 0
     };

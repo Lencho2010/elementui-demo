@@ -16,7 +16,7 @@ const routeMenu = [
 const routes = [
   {
     path: "/",
-    redirect: "/fit-comparison"
+    redirect: "/jctb-task"
   },
   /*{
     path: "/task-detail",
