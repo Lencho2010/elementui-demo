@@ -20,7 +20,12 @@ export function listTaskInfo(taskName){
   return request.get(url);
 }
 
-export function listUnzipData(taskName){
+/*export function listUnzipData(taskName){
   let url = `/subFileInfo/list/${taskName}`;
+  return request.get(url);
+}*/
+
+export function listUnzipData(taskName){
+  let url = `/jctbUnzipDetail/list/${taskName}`;
   return request.get(url);
 }
