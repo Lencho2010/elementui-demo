@@ -75,7 +75,7 @@ export default {
       title: "套合对比",
       columns: [
         { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-        { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+        { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
         { prop: "countyCode", label: "区县代码", width: 130, align: "center", filter: true },
         { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
         { prop: "cityCode", label: "地市代码", width: 130, align: "center", filter: true },
