@@ -70,7 +70,7 @@ export default {
       columnInfo: {
         overview: [
           { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-          { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+          { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
           { prop: "countyCode", label: "区县代码", width: 170, align: "center", filter: true },
           { prop: "countyName", label: "区县名称", width: 170, align: "center", filter: true },
           { prop: "cityCode", label: "地市代码", width: 170, align: "center", filter: true },
@@ -82,7 +82,7 @@ export default {
         ],
         detail: [
           { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-          { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+          { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
           { prop: "countyCode", label: "区县代码", width: 120, align: "center", filter: true },
           { prop: "countyName", label: "区县名称", width: 120, align: "center", filter: true },
           { prop: "cityCode", label: "地市代码", width: 120, align: "center", filter: true },
@@ -97,7 +97,7 @@ export default {
         ],
         fail: [
           { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-          { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+          { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
           { prop: "countyCode", label: "区县代码", width: 150, align: "center", filter: true },
           { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
           { prop: "cityCode", label: "地市代码", width: 150, align: "center", filter: true },

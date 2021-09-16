@@ -1,9 +1,15 @@
 import request from "../../util/request";
 import ca from "element-ui/src/locale/lang/ca";
 
+
+/*export function listCheckResultTotal(taskName) {
+  let url = `/checkResultTotal/listByCode/${taskName}`;
+  return request.get(url);
+}*/
+
 // 获取质检汇总信息
 export function listCheckResultTotal(taskName) {
-  let url = `/checkResultTotal/listByCode/${taskName}`;
+  let url = `/jctbQualityCheckOverview/list/${taskName}`;
   return request.get(url);
 }
 
