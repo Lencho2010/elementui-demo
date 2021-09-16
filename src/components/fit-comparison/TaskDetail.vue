@@ -230,7 +230,7 @@ export default {
           this.$refs.fit.showDialog(taskName);
           break;
         case 1004:
-          this.$refs.check.showDialog();
+          this.$refs.check.showDialog(taskName);
           break;
       }
     },

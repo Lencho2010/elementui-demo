@@ -51,13 +51,15 @@
 </template>
 
 <script>
-import resultCheck from "../../../test/resultCheck";
+//import resultCheck from "../../../test/resultCheck";
+import { listResultCheck } from "@/api/contrast/resucltCheck"
 import layExcel from "lay-excel";
 
 export default {
   name: "ResultCheck",
   mounted() {
-    this.originData = resultCheck();
+    //this.originData = resultCheck();
+
     this.filterInfo.options = this.columns
       .filter(item => item.filter)
       .map(item => ({
@@ -66,14 +68,14 @@ export default {
       }));
     this.filterInfo.modelVal = this.filterInfo.options[0].label;
     this.filterInfo.curValue = this.filterInfo.options[0].value;
-    this.getList();
+    // this.getList();
   },
   data() {
     return {
       title: "成果检查",
       columns: [
         { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-        { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
+        { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
         { prop: "countyCode", label: "区县代码", width: 130, align: "center", filter: true },
         { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
         { prop: "cityCode", label: "地市代码", width: 130, align: "center", filter: true },
@@ -82,7 +84,7 @@ export default {
         { prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true },
         { prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true },
         { prop: "ruleName", label: "规则", width: 380, align: "center", filter: true },
-        { prop: "checkResult", label: "质检结果", width: "auto", align: "left", filter: true }
+        { prop: "status", label: "质检结果", width: "auto", align: "left", filter: false }
       ],
       originData: [],
       tableData: [],
@@ -98,9 +100,13 @@ export default {
     };
   },
   methods: {
-    showDialog() {
+    showDialog(taskName) {
+      listResultCheck(taskName).then(({data})=>{
+        this.originData = data;
+        this.getList();
+        this.centerDialogVisible = true;
+      })
       this.isExpand = false;
-      this.centerDialogVisible = true;
     },
     selectChange(val) {
       this.filterInfo.curValue = val;
