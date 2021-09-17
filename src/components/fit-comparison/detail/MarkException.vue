@@ -17,18 +17,18 @@
             </div>
             <div class="search-wrap fl" style="margin-left: 50px">
               <el-input
-                class="search-input"
-                v-model="searchText"
-                placeholder="请输入"
-                @keyup.enter.native="getList"></el-input>
+                  class="search-input"
+                  v-model="searchText"
+                  placeholder="请输入"
+                  @keyup.enter.native="getList"></el-input>
               <i @click="getList"></i>
             </div>
             <el-select v-model="filterInfo.modelVal" placeholder="请选择" @change="selectChange">
               <el-option
-                v-for="item in filterInfo.options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                  v-for="item in filterInfo.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
               </el-option>
             </el-select>
           </div>
@@ -43,9 +43,9 @@
         </div>
         <div class="body">
           <el-table
-            :data="tableData" :height="tableHeight"
-            :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
-            border style="width: 100%">
+              :data="tableData" :height="tableHeight"
+              :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
+              border style="width: 100%">
             <el-table-column v-for="item of columns"
                              :align="item.align"
                              :prop="item.prop"
@@ -55,10 +55,10 @@
                 <div>
                   <el-select v-if="item.prop==='isMark'" v-model="scope.row.isMark" placeholder="请选择">
                     <el-option
-                      v-for="item in markOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                        v-for="item in markOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
                     </el-option>
                   </el-select>
                   <el-input v-else-if="item.prop==='markReason' && scope.row.isMark"
@@ -80,29 +80,30 @@
 <script>
 import markException from "../../../test/markException";
 import layExcel from "lay-excel";
+import {listMarkException} from "@/api/contrast/markException";
 
 export default {
   name: "MarkException",
   mounted() {
-    this.originData = markException();
+    //this.originData = markException();
     this.filterInfo.options = this.columns
-      .filter(item => item.filter)
-      .map(item => ({
-        value: item.prop,
-        label: item.label
-      }));
+        .filter(item => item.filter)
+        .map(item => ({
+          value: item.prop,
+          label: item.label
+        }));
     this.filterInfo.modelVal = this.filterInfo.options[0].label;
     this.filterInfo.curValue = this.filterInfo.options[0].value;
-    this.getList();
+    //this.getList();
   },
   data() {
     return {
       title: "标识例外",
       markOptions: [{
-        value: false,
+        value: 0,
         label: "否"
       }, {
-        value: true,
+        value: 1,
         label: "是"
       }],
       rootFilter: {
@@ -122,19 +123,19 @@ export default {
         checkOptions: []
       },
       columns: [
-        { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-        { prop: "batch", label: "批次", width: 170, align: "center", filter: true },
-        { prop: "countyCode", label: "区县代码", width: 130, align: "center", filter: true },
-        { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
-        { prop: "cityCode", label: "地市代码", width: 130, align: "center", filter: true },
-        { prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true },
-        { prop: "provinceCode", label: "省级代码", width: 130, align: "center", filter: true },
-        { prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true },
-        { prop: "jcbh", label: "监测编号", width: 150, align: "center", filter: true },
-        { prop: "errorType", label: "错误类型", width: 150, align: "center", filter: true },
-        { prop: "errorDesc", label: "错误描述", width: 150, align: "center", filter: true },
-        { prop: "isMark", label: "是否例外", width: 100, align: "center", filter: false },
-        { prop: "markReason", label: "例外原因", width: 250, align: "center", filter: false }
+        {prop: "index", label: "序号", width: 80, align: "center", filter: false},
+        {prop: "taskName", label: "批次", width: 170, align: "center", filter: true},
+        {prop: "countyCode", label: "区县代码", width: 130, align: "center", filter: true},
+        {prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true},
+        {prop: "cityCode", label: "地市代码", width: 130, align: "center", filter: true},
+        {prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true},
+        {prop: "provinceCode", label: "省级代码", width: 130, align: "center", filter: true},
+        {prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true},
+        {prop: "jcbh", label: "监测编号", width: 150, align: "center", filter: true},
+        {prop: "errorType", label: "错误类型", width: 150, align: "center", filter: true},
+        {prop: "errorDesc", label: "错误描述", width: 150, align: "center", filter: true},
+        {prop: "isMark", label: "是否例外", width: 100, align: "center", filter: false},
+        {prop: "markReason", label: "例外原因", width: 250, align: "center", filter: false}
       ],
       originData: [],
       tableData: [],
@@ -150,9 +151,14 @@ export default {
     };
   },
   methods: {
-    showDialog() {
-      this.isExpand = false;
-      this.centerDialogVisible = true;
+    showDialog(taskName) {
+      if (!taskName) taskName = '2021S205190028'
+      listMarkException(taskName).then(({data}) => {
+        this.originData = data;
+        this.getList();
+        this.isExpand = false;
+        this.centerDialogVisible = true;
+      })
     },
     handleRootFilterChange(val) {
       console.log(val);
