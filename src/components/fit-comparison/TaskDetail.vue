@@ -129,9 +129,12 @@ export default {
   components: {UnzipDetail, QualityCheck, FitDetail, ResultCheck, MarkException},
   mounted() {
     console.log("taskDetail init...");
-    if (this.$parent) {
-      this.$parent.showDetail = true;
-    }
+    this.$nextTick(()=>{
+      if (this.$parent) {
+        this.$parent.showDetail = true;
+      }
+    })
+
     this.gainData(this.taskName);
     this.$nextTick(() => {
       let timer;
