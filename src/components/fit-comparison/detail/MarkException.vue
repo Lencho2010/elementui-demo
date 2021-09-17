@@ -1,6 +1,7 @@
 <template>
   <div id="mark-exception">
-    <el-dialog ref="dialog" @close="handleBeforeClose"
+<!--    @close="handleBeforeClose"-->
+    <el-dialog ref="dialog"
                :visible.sync="centerDialogVisible"
                :close-on-click-modal="false"
                width="100%"
@@ -232,7 +233,19 @@ export default {
       if (this.checkIsEdit().length < 1) {
         this.centerDialogVisible = false
       } else {
-        this.$message.warning("请先保存编辑数据");
+        this.$confirm('是否要保存编辑数据?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handleCommitEdit();
+          this.centerDialogVisible = false;
+        }).catch(() => {
+          this.handleCancelEdit();
+          this.centerDialogVisible = false;
+        });
+
+        //this.$message.warning("请先保存编辑数据");
       }
     },
     checkIsEdit() {
