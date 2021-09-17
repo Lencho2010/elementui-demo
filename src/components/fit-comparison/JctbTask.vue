@@ -174,7 +174,7 @@ export default {
         pageSize: 10
       },
       intervalItem: 0,
-      interval: 3000,
+      interval: 5000,
       isPause: true,
       autoRefresh: false,
       showDetail: false,

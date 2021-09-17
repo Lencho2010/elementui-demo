@@ -129,13 +129,14 @@ export default {
   components: {UnzipDetail, QualityCheck, FitDetail, ResultCheck, MarkException},
   mounted() {
     console.log("taskDetail init...");
-    this.$nextTick(()=>{
+    this.$nextTick(() => {
       if (this.$parent) {
         this.$parent.showDetail = true;
       }
     })
-
+    this.isLoading = true;
     this.gainData(this.taskName);
+    this.intervalList();
     this.$nextTick(() => {
       let timer;
       let that = this;
@@ -153,6 +154,7 @@ export default {
     if (this.$parent) {
       this.$parent.showDetail = false;
     }
+    clearInterval(this.intervalItem);
   },
   data() {
     return {
@@ -175,53 +177,31 @@ export default {
         detailInfo: []
       },
       isLoading: false,
-      tableHeight: "100%"
+      tableHeight: "100%",
+      intervalItem: 0,
+      interval: 5000
     };
   },
   methods: {
     async gainData(tName) {
-      this.isLoading = true;
+      //this.isLoading = true;
       const {data} = await findOne(tName);
       const {id, taskName, startTime, endTime, tbCount, status} = data;
       Object.assign(this.taskInfo, data);
 
-      const {data: retData} = await listTaskInfo(taskName);
+      let {data: retData} = await listTaskInfo(taskName);
       this.tableData = retData.sort((x, y) => x.stepCode - y.stepCode);
       this.isLoading = false;
-
-      /*const retData = taskDetail();
-      retData.forEach(item => item.children.forEach(c => c.key = item.key + c.key));
-      this.tableData = retData;//taskDetail();
-      this.isLoading = false;*/
-
-      /*setTimeout(() => {
-        this.taskInfo.taskName = tName;
-        this.taskInfo.tbCount = Math.floor((Math.random() * 100) + 3000);
-        this.taskInfo.startTime = date2str(this.gainTaskStartTime(), "yyyy-MM-dd hh:mm:ss");
-        this.taskInfo.endTime = date2str(new Date(), "yyyy-MM-dd hh:mm:ss");
-        const retData = taskDetail();
-        retData.forEach(item => item.children.forEach(c => c.key = item.key + c.key));
-        this.tableData = retData;//taskDetail();
-        this.isLoading = false;
-      }, 500);*/
+    },
+    intervalList() {
+      let that = this;
+      this.intervalItem = setInterval(function () {
+        that.gainData(that.taskName);
+      }, that.interval);
     },
     handleDetail(index, row) {
       console.log(row);
       const taskName = row.taskName;
-      /*switch (row.stepInfo) {
-        case "接收解压":
-          this.$refs.unzip.showDialog(taskName);
-          break;
-        case "质量检查":
-          this.$refs.quality.showDialog(taskName);
-          break;
-        case "套合比对":
-          this.$refs.contrast.showDialog(taskName);
-          break;
-        case "成果检查":
-          this.$refs.check.showDialog();
-          break;
-      }*/
       switch (row.stepCode) {
         case 1001:
           this.$refs.unzip.showDialog(taskName);
@@ -284,14 +264,6 @@ export default {
       /*if (!this.currentRow) return;
       this.$refs.table.toggleRowExpansion(this.currentRow, false);*/
     },
-    gainTaskStartTime() {
-      const randomNum = Math.floor((Math.random() * 10) + 1);
-      const now = new Date;
-      now.setHours((now.getHours() - randomNum));
-      now.setMinutes((now.getMinutes() - randomNum));
-      now.setSeconds((now.getSeconds() - randomNum));
-      return now;
-    },
     handleExpandChange(row, allRows) {
       if (allRows.length > 0 && allRows[allRows.length - 1] == row) {
         console.log("expand......");
@@ -300,10 +272,6 @@ export default {
       } else {
         console.log("fold......");
       }
-    },
-    gainRowKey(row) {
-      console.log(row);
-      return row.key || row.stepInfo;
     }
   }
 };
