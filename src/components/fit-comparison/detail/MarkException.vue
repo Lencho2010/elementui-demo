@@ -1,7 +1,8 @@
 <template>
   <div id="mark-exception">
-    <el-dialog ref="dialog"
+    <el-dialog ref="dialog" @close="handleBeforeClose"
                :visible.sync="centerDialogVisible"
+               :close-on-click-modal="false"
                width="100%"
                top="0">
       <div class="root-wrapper">
@@ -38,7 +39,7 @@
             <el-button icon="el-icon-download" size="small" @click="handleExport">导出</el-button>
             <el-button icon="el-icon-sort" size="small" @click="isExpand=false" v-show="isExpand">折叠</el-button>
             <el-button icon="el-icon-sort" size="small" @click="isExpand=true" v-show="!isExpand">展开</el-button>
-            <i class="close" @click="centerDialogVisible=false"></i>
+            <i class="close" @click="handleBeforeClose"></i>
           </div>
         </div>
         <div class="body">
@@ -64,6 +65,9 @@
                   <el-input v-else-if="item.prop==='markReason' && scope.row.isMark"
                             v-model="scope.row.markReason"
                             placeholder=""></el-input>
+                  <span v-else-if="item.prop==='markReason' && !scope.row.isMark">
+                    <!--{{ scope.row[item.prop] }}-->
+                  </span>
                   <span v-else>
                     {{ scope.row[item.prop] }}
                   </span>
@@ -78,9 +82,8 @@
 </template>
 
 <script>
-import markException from "../../../test/markException";
 import layExcel from "lay-excel";
-import {listMarkException} from "@/api/contrast/markException";
+import {listMarkException, batchUpdate} from "@/api/contrast/markException";
 
 export default {
   name: "MarkException",
@@ -108,19 +111,19 @@ export default {
       }],
       rootFilter: {
         options: [{
-          value: "fit",
+          value: 1003,
           label: "套合比对",
           key: "fit"
         }, {
-          value: "quality",
+          value: 1002,
           label: "质量检查",
           key: "quality"
         }, {
-          value: "result",
+          value: 1004,
           label: "成果检查",
           key: "result"
         }],
-        checkOptions: []
+        checkOptions: [1002, 1003, 1004]
       },
       columns: [
         {prop: "index", label: "序号", width: 80, align: "center", filter: false},
@@ -137,6 +140,7 @@ export default {
         {prop: "isMark", label: "是否例外", width: 100, align: "center", filter: false},
         {prop: "markReason", label: "例外原因", width: 250, align: "center", filter: false}
       ],
+      originData2: [],//最原始的数据，用于判断数据是否修改
       originData: [],
       tableData: [],
       centerDialogVisible: false,
@@ -152,8 +156,10 @@ export default {
   },
   methods: {
     showDialog(taskName) {
-      if (!taskName) taskName = '2021S205190028'
+      //if (!taskName) taskName = '2021S205190028'
       listMarkException(taskName).then(({data}) => {
+        console.log(data)
+        this.originData2 = data.map(t => ({...t}));
         this.originData = data;
         this.getList();
         this.isExpand = false;
@@ -161,8 +167,9 @@ export default {
       })
     },
     handleRootFilterChange(val) {
-      console.log(val);
-      console.log(this.rootFilter.checkOptions);
+      //console.log(val);
+      //console.log(this.rootFilter.checkOptions);
+      this.getList();
     },
     selectChange(val) {
       this.filterInfo.curValue = val;
@@ -176,6 +183,12 @@ export default {
       const word = this.searchText.trim();
       if (this.isEmpty(word)) this.tableData = this.originData;
       else this.tableData = this.originData.filter(item => item[key].search(word) > -1);
+      /*console.log(this.rootFilter.checkOptions);
+      console.log(this.rootFilter.checkOptions.length);*/
+      if (this.rootFilter.checkOptions.length > 0 && this.rootFilter.checkOptions.length < 3) {
+        this.tableData = this.tableData.filter(t => this.rootFilter.checkOptions.indexOf(t.stepCode) > -1)
+        console.log(this.tableData)
+      }
     },
     handleExport() {
       if (this.tableData.length === 0) {
@@ -194,10 +207,39 @@ export default {
       }, `${this.title}.xlsx`, "xlsx");
     },
     handleCancelEdit() {
+      this.originData = this.originData2.map(t => ({...t}));
+      this.getList();
+      console.log(this.tableData)
       this.$message.success("取消编辑");
     },
     handleCommitEdit() {
-      this.$message.success("保存编辑成功");
+      const editData = this.checkIsEdit();
+      console.log(editData)
+      console.log(this.originData2)
+      if (editData.length > 0) {
+        batchUpdate(editData).then(({data}) => {
+          console.log(data)
+          if (data > 0) {
+            this.$message.success("保存编辑成功");
+            this.originData2 = this.originData.map(t => ({...t}));
+          }
+        })
+      } else {
+        this.$message.warning("没有要保存的数据");
+      }
+    },
+    handleBeforeClose() {
+      if (this.checkIsEdit().length < 1) {
+        this.centerDialogVisible = false
+      } else {
+        this.$message.warning("请先保存编辑数据");
+      }
+    },
+    checkIsEdit() {
+      return this.originData.filter(t => {
+        const findItem = this.originData2.find(t2 => t.id === t2.id);
+        return !(t.isMark === findItem.isMark && t.markReason.trim() === findItem.markReason.trim());
+      });
     }
   },
   computed: {},

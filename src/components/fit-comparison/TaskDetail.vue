@@ -42,8 +42,8 @@
           <template slot-scope="props">
             <div class="sub-table" style="background-color: gray">
               <el-table
-                :data="props.row.children" :show-header="false"
-                style="width: 100%">
+                  :data="props.row.children" :show-header="false"
+                  style="width: 100%">
                 <el-table-column width="280"
                                  label="步骤"
                                  prop="stepInfo">
@@ -60,20 +60,20 @@
                                  prop="log">
                 </el-table-column>
                 <el-table-column
-                  label="耗时" align="center"
-                  prop="consumeTime">
+                    label="耗时" align="center"
+                    prop="consumeTime">
                 </el-table-column>
               </el-table>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-          label="步骤" width="280"
-          prop="stepName">
+            label="步骤" width="280"
+            prop="stepName">
         </el-table-column>
         <el-table-column
-          label="状态" width="120"
-          prop="status">
+            label="状态" width="120"
+            prop="status">
           <template slot-scope="scope">
             {{ gainStatus(scope.row.status) }}
           </template>
@@ -86,14 +86,14 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="耗时" align="center"
-          prop="consumeTime">
+            label="耗时" align="center"
+            prop="consumeTime">
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button
-              size="mini" style=""
-              @click="handleDetail(scope.$index, scope.row)">查看
+            <el-button v-if="[1005,1006].indexOf(scope.row.stepCode)<0"
+                       size="mini" style=""
+                       @click="handleDetail(scope.$index, scope.row)">查看
             </el-button>
             <el-button v-if="scope.row.stepCode===1004"
                        size="mini" style=""
@@ -113,8 +113,8 @@
 
 <script>
 let erd = require("element-resize-detector")();
-import { findOne } from "@/api/contrast/jctbTask.js";
-import { listTaskInfo } from "@/api/contrast/taskInfo.js";
+import {findOne} from "@/api/contrast/jctbTask.js";
+import {listTaskInfo} from "@/api/contrast/taskInfo.js";
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
 import UnzipDetail from "./detail/UnzipDetail";
@@ -126,7 +126,7 @@ import MarkException from "./detail/MarkException";
 export default {
   name: "TaskDetail",
   props: ["taskName"],
-  components: { UnzipDetail, QualityCheck, FitDetail, ResultCheck, MarkException },
+  components: {UnzipDetail, QualityCheck, FitDetail, ResultCheck, MarkException},
   mounted() {
     console.log("taskDetail init...");
     if (this.$parent) {
@@ -137,7 +137,7 @@ export default {
       let timer;
       let that = this;
       let lisDom = document.getElementById("app");
-      erd.listenTo(lisDom, function(element) {
+      erd.listenTo(lisDom, function (element) {
         clearTimeout(timer);
         timer = setTimeout(() => {
           that.tableHeight = lisDom.clientHeight - 207;
@@ -155,12 +155,12 @@ export default {
     return {
       tableData: [],
       stepInfos: [
-        { name: "接收解压", value: "接收解压" },
-        { name: "质量检查", value: "质量检查" },
-        { name: "套合对比", value: "套合对比" },
-        { name: "成果检查", value: "成果检查" },
-        { name: "成果输出", value: "成果输出" },
-        { name: "数据入库", value: "数据入库" }
+        {name: "接收解压", value: "接收解压"},
+        {name: "质量检查", value: "质量检查"},
+        {name: "套合对比", value: "套合对比"},
+        {name: "成果检查", value: "成果检查"},
+        {name: "成果输出", value: "成果输出"},
+        {name: "数据入库", value: "数据入库"}
       ],
       currentRow: null,
       taskInfo: {
@@ -178,11 +178,11 @@ export default {
   methods: {
     async gainData(tName) {
       this.isLoading = true;
-      const { data } = await findOne(tName);
-      const { id, taskName, startTime, endTime, tbCount, status } = data;
+      const {data} = await findOne(tName);
+      const {id, taskName, startTime, endTime, tbCount, status} = data;
       Object.assign(this.taskInfo, data);
 
-      const { data: retData } = await listTaskInfo(taskName);
+      const {data: retData} = await listTaskInfo(taskName);
       this.tableData = retData.sort((x, y) => x.stepCode - y.stepCode);
       this.isLoading = false;
 
@@ -235,7 +235,7 @@ export default {
       }
     },
     handleMarkException(index, row) {
-      this.$refs.mark.showDialog();
+      this.$refs.mark.showDialog(row.taskName);
     },
     handleRestart(cmd) {
       if (!this.currentRow) return;
@@ -266,7 +266,7 @@ export default {
       return ret;
     },
     goList() {
-      this.$router.push({ name: "contrast-comparison" });
+      this.$router.push({name: "contrast-comparison"});
     },
     handleCurrentChange(val) {
       this.currentRow = val;
