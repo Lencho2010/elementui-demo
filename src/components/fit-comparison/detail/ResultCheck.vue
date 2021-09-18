@@ -10,18 +10,18 @@
             <span class="title">{{ title }}</span>
             <div class="search-wrap fl" style="margin-left: 50px">
               <el-input
-                class="search-input"
-                v-model="searchText"
-                placeholder="请输入"
-                @keyup.enter.native="getList"></el-input>
+                  class="search-input"
+                  v-model="searchText"
+                  placeholder="请输入"
+                  @keyup.enter.native="getList"></el-input>
               <i @click="getList"></i>
             </div>
             <el-select v-model="filterInfo.modelVal" placeholder="请选择" @change="selectChange">
               <el-option
-                v-for="item in filterInfo.options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                  v-for="item in filterInfo.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
               </el-option>
             </el-select>
           </div>
@@ -34,9 +34,9 @@
         </div>
         <div class="body">
           <el-table
-            :data="tableData" :height="tableHeight"
-            :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
-            border style="width: 100%">
+              :data="tableData" :height="tableHeight"
+              :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
+              border style="width: 100%">
             <el-table-column v-for="item of columns"
                              :align="item.align"
                              :prop="item.prop"
@@ -52,7 +52,7 @@
 
 <script>
 //import resultCheck from "../../../test/resultCheck";
-import { listResultCheck } from "@/api/contrast/resucltCheck"
+import {listResultCheck} from "@/api/contrast/resucltCheck"
 import layExcel from "lay-excel";
 
 export default {
@@ -61,11 +61,11 @@ export default {
     //this.originData = resultCheck();
 
     this.filterInfo.options = this.columns
-      .filter(item => item.filter)
-      .map(item => ({
-        value: item.prop,
-        label: item.label
-      }));
+        .filter(item => item.filter)
+        .map(item => ({
+          value: item.prop,
+          label: item.label
+        }));
     this.filterInfo.modelVal = this.filterInfo.options[0].label;
     this.filterInfo.curValue = this.filterInfo.options[0].value;
     // this.getList();
@@ -74,17 +74,17 @@ export default {
     return {
       title: "成果检查",
       columns: [
-        { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-        { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
-        { prop: "countyCode", label: "区县代码", width: 130, align: "center", filter: true },
-        { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
-        { prop: "cityCode", label: "地市代码", width: 130, align: "center", filter: true },
-        { prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true },
-        { prop: "provinceCode", label: "省级代码", width: 130, align: "center", filter: true },
-        { prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true },
-        { prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true },
-        { prop: "ruleName", label: "规则", width: 380, align: "center", filter: true },
-        { prop: "status", label: "质检结果", width: "auto", align: "left", filter: false }
+        {prop: "index", label: "序号", width: 80, align: "center", filter: false},
+        {prop: "taskName", label: "批次", width: 170, align: "center", filter: true},
+        {prop: "countyCode", label: "区县代码", width: 130, align: "center", filter: true},
+        {prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true},
+        {prop: "cityCode", label: "地市代码", width: 130, align: "center", filter: true},
+        {prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true},
+        {prop: "provinceCode", label: "省级代码", width: 130, align: "center", filter: true},
+        {prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true},
+        {prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true},
+        {prop: "ruleName", label: "规则", width: 380, align: "center", filter: true},
+        {prop: "status", label: "质检结果", width: "auto", align: "left", filter: false}
       ],
       originData: [],
       tableData: [],
@@ -101,8 +101,8 @@ export default {
   },
   methods: {
     showDialog(taskName) {
-      listResultCheck(taskName).then(({data})=>{
-        this.originData = data;
+      listResultCheck(taskName).then(({data}) => {
+        this.originData = data.map(t => ({...t, status: this.gainStatus(t.status)}));
         this.getList();
         this.centerDialogVisible = true;
       })
@@ -136,6 +136,22 @@ export default {
       layExcel.exportExcel({
         sheet1: data
       }, `${this.title}.xlsx`, "xlsx");
+    },
+    gainStatus(status) {
+      let ret = "";
+      switch (status) {
+        case -1:
+          ret = "不通过";
+          break;
+        case 1:
+          ret = "通过";
+          break;
+        case 0:
+        default:
+          ret = "";
+          break;
+      }
+      return ret;
     }
   },
   computed: {},
