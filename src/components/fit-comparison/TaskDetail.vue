@@ -136,7 +136,7 @@ export default {
     })
     this.isLoading = true;
     this.gainData(this.taskName);
-    this.intervalList();
+    //this.intervalList();
     this.$nextTick(() => {
       let timer;
       let that = this;
