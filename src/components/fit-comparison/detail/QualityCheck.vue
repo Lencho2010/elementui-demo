@@ -14,18 +14,18 @@
             </el-tabs>
             <div class="search-wrap fl" style="margin-left: 50px">
               <el-input
-                class="search-input"
-                v-model="searchText"
-                placeholder="请输入"
-                @keyup.enter.native="getList"></el-input>
+                  class="search-input"
+                  v-model="searchText"
+                  placeholder="请输入"
+                  @keyup.enter.native="getList"></el-input>
               <i @click="getList"></i>
             </div>
             <el-select v-model="filterInfo.modelVal" placeholder="请选择" @change="selectChange">
               <el-option
-                v-for="item in filterInfo.options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                  v-for="item in filterInfo.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
               </el-option>
             </el-select>
           </div>
@@ -38,9 +38,9 @@
         </div>
         <div class="body">
           <el-table
-            :data="tableData" :height="tableHeight"
-            :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
-            border style="width: 100%">
+              :data="tableData" :height="tableHeight"
+              :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
+              border style="width: 100%">
             <el-table-column v-for="item of columns"
                              :align="item.align"
                              :prop="item.prop"
@@ -57,7 +57,7 @@
 <script>
 import layExcel from "lay-excel";
 import qualityCheck from "../../../test/qualityCheck";
-import { listCheckData } from "@/api/contrast/checkInfo";
+import {listCheckData} from "@/api/contrast/checkInfo";
 
 export default {
   name: "QualityCheck",
@@ -69,45 +69,45 @@ export default {
       columns: [],
       columnInfo: {
         overview: [
-          { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-          { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
-          { prop: "countyCode", label: "区县代码", width: 170, align: "center", filter: true },
-          { prop: "countyName", label: "区县名称", width: 170, align: "center", filter: true },
-          { prop: "cityCode", label: "地市代码", width: 170, align: "center", filter: true },
-          { prop: "cityName", label: "地市名称", width: 170, align: "center", filter: true },
-          { prop: "provinceCode", label: "省级代码", width: 170, align: "center", filter: true },
-          { prop: "provinceName", label: "省级名称", width: 170, align: "center", filter: true },
-          { prop: "status", label: "状态", width: 170, align: "center", filter: true },
-          { prop: "info", label: "信息", width: "auto", align: "left", filter: true }
+          {prop: "index", label: "序号", width: 80, align: "center", filter: false},
+          {prop: "taskName", label: "批次", width: 170, align: "center", filter: true},
+          {prop: "countyCode", label: "区县代码", width: 170, align: "center", filter: true},
+          {prop: "countyName", label: "区县名称", width: 170, align: "center", filter: true},
+          {prop: "cityCode", label: "地市代码", width: 170, align: "center", filter: true},
+          {prop: "cityName", label: "地市名称", width: 170, align: "center", filter: true},
+          {prop: "provinceCode", label: "省级代码", width: 170, align: "center", filter: true},
+          {prop: "provinceName", label: "省级名称", width: 170, align: "center", filter: true},
+          {prop: "status", label: "状态", width: 170, align: "center", filter: true},
+          {prop: "info", label: "信息", width: "auto", align: "left", filter: true}
         ],
         detail: [
-          { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-          { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
-          { prop: "countyCode", label: "区县代码", width: 120, align: "center", filter: true },
-          { prop: "countyName", label: "区县名称", width: 120, align: "center", filter: true },
-          { prop: "cityCode", label: "地市代码", width: 120, align: "center", filter: true },
-          { prop: "cityName", label: "地市名称", width: 120, align: "center", filter: true },
-          { prop: "provinceCode", label: "省级代码", width: 120, align: "center", filter: true },
-          { prop: "provinceName", label: "省级名称", width: 120, align: "center", filter: true },
-          { prop: "ruleCode", label: "规则代码", width: 120, align: "center", filter: true },
-          { prop: "ruleName", label: "规则", width: 170, align: "center", filter: true },
-          { prop: "checkResult", label: "质检结果", width: 170, align: "center", filter: true },
-          { prop: "checkInfo", label: "质检信息", width: 170, align: "center", filter: true },
-          { prop: "finalResult", label: "结果信息", width: "auto", align: "left", filter: true }
+          {prop: "index", label: "序号", width: 80, align: "center", filter: false},
+          {prop: "taskName", label: "批次", width: 170, align: "center", filter: true},
+          {prop: "countyCode", label: "区县代码", width: 120, align: "center", filter: true},
+          {prop: "countyName", label: "区县名称", width: 120, align: "center", filter: true},
+          {prop: "cityCode", label: "地市代码", width: 120, align: "center", filter: true},
+          {prop: "cityName", label: "地市名称", width: 120, align: "center", filter: true},
+          {prop: "provinceCode", label: "省级代码", width: 120, align: "center", filter: true},
+          {prop: "provinceName", label: "省级名称", width: 120, align: "center", filter: true},
+          {prop: "ruleCode", label: "规则代码", width: 120, align: "center", filter: true},
+          {prop: "ruleName", label: "规则", width: 170, align: "center", filter: true},
+          {prop: "checkResult", label: "质检结果", width: 170, align: "center", filter: true},
+          {prop: "checkInfo", label: "质检信息", width: 170, align: "center", filter: true},
+          {prop: "finalResult", label: "结果信息", width: "auto", align: "left", filter: true}
         ],
         fail: [
-          { prop: "index", label: "序号", width: 80, align: "center", filter: false },
-          { prop: "taskName", label: "批次", width: 170, align: "center", filter: true },
-          { prop: "countyCode", label: "区县代码", width: 150, align: "center", filter: true },
-          { prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true },
-          { prop: "cityCode", label: "地市代码", width: 150, align: "center", filter: true },
-          { prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true },
-          { prop: "provinceCode", label: "省级代码", width: 150, align: "center", filter: true },
-          { prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true },
-          { prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true },
-          { prop: "ruleName", label: "规则", width: 170, align: "center", filter: true },
-          { prop: "tbbh", label: "图斑编号", width: 170, align: "center", filter: true },
-          { prop: "finalResult", label: "结果信息", width: "auto", align: "left", filter: true }
+          {prop: "index", label: "序号", width: 80, align: "center", filter: false},
+          {prop: "taskName", label: "批次", width: 170, align: "center", filter: true},
+          {prop: "countyCode", label: "区县代码", width: 150, align: "center", filter: true},
+          {prop: "countyName", label: "区县名称", width: 150, align: "center", filter: true},
+          {prop: "cityCode", label: "地市代码", width: 150, align: "center", filter: true},
+          {prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true},
+          {prop: "provinceCode", label: "省级代码", width: 150, align: "center", filter: true},
+          {prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true},
+          {prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true},
+          {prop: "ruleName", label: "规则", width: 170, align: "center", filter: true},
+          {prop: "tbbh", label: "图斑编号", width: 170, align: "center", filter: true},
+          {prop: "finalResult", label: "结果信息", width: "auto", align: "left", filter: true}
         ]
       },
       originData: [],
@@ -123,7 +123,7 @@ export default {
       tableHeight: 300,
       activeName: "overview",
       taskName: "",
-      cacheData: { "overview": [], "detail": [], "fail": [] }
+      cacheData: {"overview": [], "detail": [], "fail": []}
     };
   },
   methods: {
@@ -137,11 +137,11 @@ export default {
       this.searchText = "";
       this.columns = this.columnInfo[this.activeName];
       this.filterInfo.options = this.columns
-        .filter(item => item.filter)
-        .map(item => ({
-          value: item.prop,
-          label: item.label
-        }));
+          .filter(item => item.filter)
+          .map(item => ({
+            value: item.prop,
+            label: item.label
+          }));
       this.filterInfo.modelVal = this.filterInfo.options[0].label;
       this.filterInfo.curValue = this.filterInfo.options[0].value;
 
@@ -152,9 +152,13 @@ export default {
         this.originData = activeData;
         this.getList();
       } else
-        listCheckData(this.activeName, this.taskName).then(({ data }) => {
+        listCheckData(this.activeName, this.taskName).then(({data}) => {
           console.log("request...");
-          this.cacheData[this.activeName] = data;
+          this.cacheData[this.activeName] = data.map(t => ({
+            ...t,
+            status: this.gainStatus(t.status),
+            checkResult: this.gainStatus(t.checkResult)
+          }));
           this.originData = data;
           this.getList();
         });
@@ -187,6 +191,22 @@ export default {
       layExcel.exportExcel({
         sheet1: data
       }, `${this.activeName}.xlsx`, "xlsx");
+    },
+    gainStatus(status) {
+      let ret = "";
+      switch (status) {
+        case -1:
+          ret = "不通过";
+          break;
+        case 1:
+          ret = "通过";
+          break;
+        case 0:
+        default:
+          ret = "";
+          break;
+      }
+      return ret;
     }
   },
   computed: {},
