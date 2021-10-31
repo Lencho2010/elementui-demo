@@ -192,7 +192,7 @@ export default {
     handleDetail(index, row) {
       // this.showDetail = true;
       // this.$router.push({ name: "task-detail" }); //"/contrast-comparison/task-detail"
-      this.$router.push({ path: `/jctb-task/task-detail/${row.taskName}` }); //"/contrast-comparison/task-detail"
+      this.$router.push({ path: `/contrast-analysis/jctb-task/task-detail/${row.taskName}` }); //"/contrast-comparison/task-detail"
     },
     gainTargetStatus(status) {
       switch (status) {
@@ -371,6 +371,8 @@ export default {
   flex: 1;
   min-width: 1360px;
   padding: 0 10px;
+  background: #ffffff;
+  height: 100%;
 }
 
 #fit-comparison {

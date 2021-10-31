@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import FitComparison from "./fit-comparison";
+import contrastAnalysis from "@/router/contrastAnalysis";
 import Home from "./home";
 import Query from "./query";
 import home from "./home";
@@ -8,7 +9,8 @@ import home from "./home";
 Vue.use(VueRouter);
 
 const routeMenu = [
-  FitComparison,
+  contrastAnalysis,
+  // FitComparison,
   home,
   Query
 ];
@@ -16,7 +18,7 @@ const routeMenu = [
 const routes = [
   {
     path: "/",
-    redirect: "/jctb-task"
+    redirect: "/contrast-analysis/jctb-task"
   },
   /*{
     path: "/task-detail",

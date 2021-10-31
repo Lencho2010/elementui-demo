@@ -136,7 +136,7 @@ export default {
     })
     this.isLoading = true;
     this.gainData(this.taskName);
-    this.intervalList();
+    // this.intervalList();
     this.$nextTick(() => {
       let timer;
       let that = this;
@@ -144,7 +144,7 @@ export default {
       erd.listenTo(lisDom, function (element) {
         clearTimeout(timer);
         timer = setTimeout(() => {
-          that.tableHeight = lisDom.clientHeight - 207;
+          that.tableHeight = lisDom.clientHeight - 237;
           console.log(that.tableHeight);
         }, 500);
       });
