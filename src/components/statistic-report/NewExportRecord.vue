@@ -29,6 +29,7 @@
           <span><i class="must-flag">*</i>统计日期：</span>
           <el-date-picker
             v-model="dateRange"
+            @change="handleDataChange"
             type="daterange"
             align="right"
             unlink-panels
@@ -75,12 +76,20 @@
 
 <script>
 
-import { addReport } from "@/api/statisticReport/report";
+import { addReport, taskNameList, templateDataList } from "@/api/statisticReport/report";
 
 const dayjs = require("dayjs");
 
 export default {
   name: "NewExportRecord",
+  mounted() {
+    templateDataList().then(({ data }) => {
+      this.docOptions = data.map(t => {
+        const index = t.name.indexOf("-");
+        return index > -1 ? t.name.substring(0, index) : t.name;
+      });
+    });
+  },
   data() {
     return {
       name: "",
@@ -122,23 +131,17 @@ export default {
         { value: "year", label: "年报" }
       ],
       chooseStatistic: "week",
-      taskNameArr: [
-        { value: "2021S104300011", label: "2021S104300011" },
-        { value: "2021S104300012", label: "2021S104300012" },
-        { value: "2021S104300013", label: "2021S104300013" },
-        { value: "2021S104300014", label: "2021S104300014" },
-        { value: "2021S104300015", label: "2021S104300015" }
-      ],
+      taskNameArr: [],
       chooseTaskNames: [],
 
       checkDocsAll: false,
-      checkedDocs: ["关于2021年卫片执法下发数据情况的报告", "附1", "附2", "附3"],
-      docOptions: ["关于2021年卫片执法下发数据情况的报告", "附1", "附2", "附3", "表1", "表2", "表3", "表4", "表5", "表6", "表7", "表8", "表9"],
-      isIndeterminate: true
+      checkedDocs: [],
+      docOptions: [],
+      isIndeterminate: false
     };
   },
   methods: {
-    newReport(status){
+    newReport(status) {
       addReport({
         id: "12987150",
         name: this.name,
@@ -158,14 +161,14 @@ export default {
     handleNewAndExport() {
       if (!this.handleCheckParams()) {
         this.$message.warning("请填写必选项！");
-        return
+        return;
       }
       this.newReport(2);
     },
     handleNew() {
       if (!this.handleCheckParams()) {
         this.$message.warning("请填写必选项！");
-        return
+        return;
       }
       this.newReport(0);
     },
@@ -198,6 +201,15 @@ export default {
       let checkedCount = value.length;
       this.checkDocsAll = checkedCount === this.docOptions.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.docOptions.length;
+    },
+    handleDataChange(date) {
+      if (!date) this.taskNameArr = [];
+      taskNameList(date).then(({ data }) => {
+        this.taskNameArr = data.map(t => ({ label: t, value: t }));
+      }).catch(err => {
+        this.taskNameArr = [];
+        this.$message.error(err);
+      });
     }
   }
 };

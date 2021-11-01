@@ -182,7 +182,7 @@ export function gainStatus(status) {
   return ret;
 }
 
-export function gainStatisticType(staType){
+export function gainStatisticType(staType) {
   let ret = "";
   switch (staType) {
     case "week":
@@ -290,6 +290,18 @@ export function templateDataList() {
         { index: 8, name: "表4-疑似违法面积100亩以上详表" },
         { index: 9, name: "表5-疑似违法面积50亩以上详表" },
         { index: 10, name: "表6-XXXXXXX" }
+      ]
+    });
+  });
+}
+
+export function taskNameList(dateRange) {
+  return new Promise(resolve => {
+    resolve({
+      code: 200,
+      message: "成功",
+      data: [
+        "2021S104300011", "2021S104300012", "2021S104300013", "2021S104300014", "2021S104300015", "2021S104300016"
       ]
     });
   });
