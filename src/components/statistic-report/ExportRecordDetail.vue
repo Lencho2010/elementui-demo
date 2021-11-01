@@ -5,32 +5,32 @@
         <div class="label-info">基本信息</div>
         <div class="grid-info">
           <span>名称：</span>
-          <span class="left-align">{{ name }}</span>
+          <span class="left-align">{{ detail.name }}</span>
 
           <span>责任人：</span>
-          <span class="left-align">{{ chargePerson }}</span>
+          <span class="left-align">{{ detail.chargePerson }}</span>
 
           <span>描述：</span>
-          <span class="left-align">{{ desc }}</span>
+          <span class="left-align">{{ detail.desc }}</span>
         </div>
         <div class="label-info">统计信息</div>
         <div class="grid-info">
           <span>统计类型：</span>
-          <span class="left-align">{{  chooseStatistic }}</span>
+          <span class="left-align">{{ gainStatisticType(detail.statisticType) }}</span>
 
           <span>统计日期：</span>
-          <span class="left-align">{{ dateRange }}</span>
+          <span class="left-align">{{ detail.statisticTime }}</span>
 
           <span>统计批次：</span>
-          <span class="left-align">{{ chooseTaskNames }}</span>
+          <span class="left-align">{{ detail.taskNames }}</span>
         </div>
         <div class="label-info">导出文档</div>
         <div class="doc-info">
-          <p>{{ exportDocs }}</p>
+          <p>{{ detail.exportDocs }}</p>
         </div>
         <div class="label-info">导出路径</div>
         <div class="doc-info">
-          <p>{{ exportPath }}</p>
+          <p>{{ detail.exportPath }}</p>
         </div>
       </div>
     </el-main>
@@ -38,21 +38,22 @@
 </template>
 
 <script>
+import { gainStatisticType } from "@/api/statisticReport/report";
 
 export default {
   name: "ExportRecordDetail",
   data() {
     return {
-      name: "统计报告报表导出-202110271056",
-      chargePerson: "admin",
-      desc: "这是一条描述信息",
-      dateRange: "2021-10-01 ～ 2021-10-07",
-      chooseStatistic: "week",
-      chooseTaskNames: "2021S104300010，2021S104300011，2021S104300012，2021S104300013，2021S104300014，2021S104300015，2021S104300016",
-      checkedDocs: ["关于2021年卫片执法下发数据情况的报告", "附1", "附2", "附3"],
-      exportDocs:"关于2021年卫片执法下发数据情况的报告，附1，附2，附3，表1，表2，表3，表4，表5",
-      exportPath:"\\\\共享文件\\统计报告报表\\统计报告报表导出-202110271056.zip"
+      detail: {}
     };
+  },
+  methods: {
+    initData(detail) {
+      this.detail = detail;
+    },
+    gainStatisticType(staType) {
+      return gainStatisticType(staType);
+    }
   }
 };
 </script>
@@ -84,7 +85,7 @@ export default {
         text-align: right;
       }
 
-      .left-align{
+      .left-align {
         text-align: left;
       }
     }

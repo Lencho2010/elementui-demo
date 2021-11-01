@@ -9,11 +9,11 @@
         router="true"
         @select="handleSelect">
         <el-menu-item index="jctb-task" route="/contrast-analysis/jctb-task">
-          <i class="el-icon-menu"></i>
+          <i class="el-icon-message"></i>
           <span slot="title">套合比对任务</span>
         </el-menu-item>
         <el-menu-item index="statistic-report" route="/contrast-analysis/statistic-report">
-          <i class="el-icon-setting"></i>
+          <i class="el-icon-data-analysis"></i>
           <span slot="title">统计报告报表</span>
         </el-menu-item>
       </el-menu>

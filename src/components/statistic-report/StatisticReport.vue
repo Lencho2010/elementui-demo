@@ -3,7 +3,8 @@
     <el-container style="background: #fff">
       <el-header style="font-size: 16px;font-weight: bold; background: #e2e2e2">
         <span style="border-left: 7px solid #02a7f0; height: 25px; padding-left: 10px">{{ title }}</span>
-        <i v-show="title !== exportOptions.list" @click="returnList" class="el-icon-close" style="float: right; margin-top: 25px; cursor: pointer;"></i>
+        <i v-show="title !== exportOptions.list" @click="returnList" class="el-icon-close"
+           style="float: right; margin-top: 25px; cursor: pointer;"></i>
       </el-header>
       <el-container v-show="title === exportOptions.list">
         <el-header style="font-size: 16px; background: white;height: 100px">
@@ -41,6 +42,7 @@
         </el-header>
         <el-main ref="main-container">
           <el-table ref="table"
+                    v-loading="isLoading"
                     :data="tableData"
                     :height="tableHeight"
                     :header-cell-style="{
@@ -84,8 +86,10 @@
             <el-table-column label="状态" width="120">
               <template slot-scope="scope">
                 <div style="display: flex; align-items: center; align-content: center">
-                  <div style="background: red; width: 6px; height: 6px; border-radius: 3px; margin-right: 5px"></div>
-                  <span>{{ scope.row.status }}</span>
+                  <div style="width: 6px; height: 6px; border-radius: 3px; margin-right: 5px"
+                       :style="{background: gainStatusColor(scope.row.status)}"
+                  ></div>
+                  <span>{{ gainStatus(scope.row.status) }}</span>
                 </div>
               </template>
             </el-table-column>
@@ -122,11 +126,11 @@
           </el-pagination>
         </el-footer>
       </el-container>
-      <el-container v-show="title === exportOptions.add">
+      <el-container v-if="title === exportOptions.add">
         <new-export-record @returnList="returnList"></new-export-record>
       </el-container>
       <el-container v-show="title === exportOptions.detail">
-        <export-record-detail @returnList="returnList"></export-record-detail>
+        <export-record-detail ref="detail" @returnList="returnList"></export-record-detail>
       </el-container>
     </el-container>
     <el-aside width="300px" style="background-color: #ffffff;margin-left: 15px">
@@ -152,6 +156,7 @@
 <script>
 import NewExportRecord from "@/components/statistic-report/NewExportRecord";
 import ExportRecordDetail from "@/components/statistic-report/ExportRecordDetail";
+import { gainStatus, reportList, chargePersonList, templateDataList } from "@/api/statisticReport/report.js";
 
 let erd = require("element-resize-detector")();
 
@@ -159,7 +164,15 @@ export default {
   name: "StatisticReport",
   components: { NewExportRecord, ExportRecordDetail },
   mounted() {
+    this.isLoading = true;
     this.title = this.exportOptions.list;
+    chargePersonList().then(({ data }) => {
+      this.chargePersons = data;
+    });
+    templateDataList().then(({ data }) => {
+      this.templateData = data;
+    });
+    this.getList();
     this.$nextTick(() => {
       let timer;
       erd.listenTo(this.$refs["main-container"].$el, ele => {
@@ -172,64 +185,9 @@ export default {
   },
   data() {
     return {
-      tableData: [
-        {
-          index: 1,
-          id: "12987122",
-          name: "统计报告报表导出-202110271056",
-          chargePerson: "admin",
-          status: "已完成",
-          statisticTime: "2021-10-01 ～  2021-10-07",
-          exportTime: "2021-10-27  08:50:08",
-          taskNames: "2021S104300010，2021S104300011，2021S104300012，2021S104300013，2021S104300014，2021S104300015，2021S104300016",
-          exportDocs: "关于2021年卫片执法下发数据情况的报告，附1，附2，附3，表1，表2，表3，表4，表5",
-          exportPath: "\\\\共享文件\\统计报告报表\\统计报告报表导出-202110271056.zip"
-        }, {
-          index: 2,
-          id: "12987123",
-          name: "统计报告报表导出-202110271057",
-          chargePerson: "admin",
-          status: "进行中",
-          statisticTime: "2021-10-01 ～  2021-10-07",
-          exportTime: "2021-10-27  08:50:08",
-          taskNames: "2021S104300010，2021S104300011，2021S104300012，2021S104300013，2021S104300014，2021S104300015，2021S104300016",
-          exportDocs: "关于2021年卫片执法下发数据情况的报告，附1，附2，附3，表1，表2，表3，表4，表5",
-          exportPath: "\\\\共享文件\\统计报告报表\\统计报告报表导出-202110271056.zip"
-        }, {
-          index: 3,
-          id: "12987125",
-          name: "统计报告报表导出-202110271058",
-          chargePerson: "admin",
-          status: "未执行",
-          statisticTime: "2021-10-01 ～  2021-10-07",
-          exportTime: "2021-10-27  08:50:08",
-          taskNames: "2021S104300010，2021S104300011，2021S104300012，2021S104300013，2021S104300014，2021S104300015，2021S104300016",
-          exportDocs: "关于2021年卫片执法下发数据情况的报告，附1，附2，附3，表1，表2，表3，表4，表5",
-          exportPath: "\\\\共享文件\\统计报告报表\\统计报告报表导出-202110271056.zip"
-        }, {
-          index: 4,
-          id: "12987126",
-          name: "统计报告报表导出-202110271059",
-          chargePerson: "admin",
-          status: "已完成",
-          statisticTime: "2021-10-01 ～  2021-10-07",
-          exportTime: "2021-10-27  08:50:08",
-          taskNames: "2021S104300010，2021S104300011，2021S104300012，2021S104300013，2021S104300014，2021S104300015，2021S104300016",
-          exportDocs: "关于2021年卫片执法下发数据情况的报告，附1，附2，附3，表1，表2，表3，表4，表5",
-          exportPath: "\\\\共享文件\\统计报告报表\\统计报告报表导出-202110271056.zip"
-        }],
-      templateData: [
-        { index: 1, name: "关于2021年卫片执法下发数据情况的..." },
-        { index: 2, name: "附1-2021年卫片图斑下发数据覆盖情况..." },
-        { index: 3, name: "附2-2021年接收卫片图斑质检结果及..." },
-        { index: 4, name: "附3-大图斑明细统计表" },
-        { index: 5, name: "表1-总体统计详表" },
-        { index: 6, name: "表2-大图斑100亩以上详表" },
-        { index: 7, name: "表3-大图斑50亩以上详表" },
-        { index: 8, name: "表4-疑似违法面积100亩以上详表" },
-        { index: 9, name: "表5-疑似违法面积50亩以上详表" },
-        { index: 10, name: "表6-XXXXXXX" }
-      ],
+      isLoading: false,
+      tableData: [],
+      templateData: [],
       tableHeight: 500,
       taskNameInput: "",
       pageInfo: {
@@ -238,23 +196,7 @@ export default {
         pageSizes: [5, 10, 13],
         pageSize: 10
       },
-      chargePersons: [
-        {
-          value: "选项1",
-          label: "admin"
-        }, {
-          value: "选项2",
-          label: "admin1"
-        }, {
-          value: "选项3",
-          label: "admin2"
-        }, {
-          value: "选项4",
-          label: "admin3"
-        }, {
-          value: "选项5",
-          label: "admin4"
-        }],
+      chargePersons: [],
       chargePerson: "",
       title: "",
       exportOptions: {
@@ -270,17 +212,16 @@ export default {
     },
     handleDetail(index, row) {
       console.log(index, row);
+      this.$refs.detail.initData(row);
       this.title = this.exportOptions.detail;
     },
     handleSizeChange(val) {
       this.pageInfo.pageSize = val;
-      const { currentPage: curPage, pageSize } = this.pageInfo;
-      console.log("curPage:pageSize----->", curPage, pageSize);
+      this.getList();
     },
     handleCurrentChange(val) {
       this.pageInfo.currentPage = val;
-      const { currentPage: curPage, pageSize } = this.pageInfo;
-      console.log("curPage:pageSize----->", curPage, pageSize);
+      this.getList();
     },
     handleExpand() {
       this.tableData.forEach(row => this.$refs.table.toggleRowExpansion(row, true));
@@ -289,17 +230,88 @@ export default {
       this.tableData.forEach(row => this.$refs.table.toggleRowExpansion(row, false));
     },
     handleQuery() {
-
+      this.getList();
     },
     handleReset() {
       this.taskNameInput = "";
       this.chargePerson = "";
+      this.pageInfo.currentPage = 1;
+      this.pageInfo.pageSize = 10;
+      this.getList();
     },
     handleAddExport() {
       this.title = this.exportOptions.add;
     },
     returnList() {
       this.title = this.exportOptions.list;
+      this.getList();
+    },
+    getList() {
+      const page = this.pageInfo.currentPage;
+      const rows = this.pageInfo.pageSize;
+      const reportName = this.taskNameInput;
+      const chargePerson = this.chargePerson;
+      // const { list: status } = this.menus.statusList.find(item => item.value === this.menus.selectStatus);
+
+      // reportList(page, rows, taskName, status.join(",")).then(({ data }) => {
+      reportList(page, rows, reportName, chargePerson).then(({ data }) => {
+        const { list, total } = data;
+        this.pageInfo.totalCount = total;
+        this.tableData = list;
+        this.isLoading = false;
+      }).catch(err => {
+        this.isLoading = false;
+        this.$message.error(err);
+      });
+    },
+    gainStatus(status) {
+      return gainStatus(status);
+    },
+    gainStatusColor(status) {
+      let ret = "";
+      switch (status) {
+        case 0:
+          ret = "#bfbfbf";
+          break;
+        case 1:
+          ret = "#0bac5b";
+          break;
+        case -1:
+          ret = "red";
+          break;
+        case 2:
+          ret = "#0e77d1";
+          break;
+        default:
+          ret = "#bfbfbf";
+          break;
+      }
+      return ret;
+    },
+    cellStyle({ row, column, rowIndex, columnIndex }) {
+      if (column.property !== "status") return;
+      let ret = "";
+      switch (row.status) {
+        case 0:
+          ret = "color:#999";
+          break;
+        case 1:
+          ret = "color:#5dc88d";
+          break;
+        case -1:
+          ret = "color:#fe6464";
+          break;
+        case 2:
+          ret = "color:#00b4ff";
+          break;
+        case 3:
+          ret = "color:#000";
+          break;
+        default:
+          ret = "";
+          break;
+      }
+      return ret;
     }
   }
 };

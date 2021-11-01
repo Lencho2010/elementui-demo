@@ -28,7 +28,7 @@ export default {
       }, {
         key: 1003,
         name: "套合比对",
-        route: "/contrast-analysis"
+        route: "/contrast-analysis/jctb-task"
       }],
       activeIndex: 0
     };

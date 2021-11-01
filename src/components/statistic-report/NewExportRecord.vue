@@ -75,6 +75,10 @@
 
 <script>
 
+import { addReport } from "@/api/statisticReport/report";
+
+const dayjs = require("dayjs");
+
 export default {
   name: "NewExportRecord",
   data() {
@@ -134,11 +138,36 @@ export default {
     };
   },
   methods: {
+    newReport(status){
+      addReport({
+        id: "12987150",
+        name: this.name,
+        chargePerson: this.chargePerson,
+        status,
+        statisticTime: `${dayjs(this.dateRange[0]).format("YYYY-MM-DD")} ~ ${dayjs(this.dateRange[1]).format("YYYY-MM-DD")}`,
+        exportTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+        taskNames: this.chooseTaskNames.join(","),
+        exportDocs: this.checkedDocs.join(","),
+        exportPath: `\\\\共享文件\\统计报告报表\\${this.name}.zip`
+      }).then(() => {
+        this.$emit("returnList");
+      }).catch(err => {
+        this.$message.error(err);
+      });
+    },
     handleNewAndExport() {
-      this.$emit("returnList");
+      if (!this.handleCheckParams()) {
+        this.$message.warning("请填写必选项！");
+        return
+      }
+      this.newReport(2);
     },
     handleNew() {
-      this.$emit("returnList");
+      if (!this.handleCheckParams()) {
+        this.$message.warning("请填写必选项！");
+        return
+      }
+      this.newReport(0);
     },
     handleReset() {
       this.name = "";
@@ -149,7 +178,14 @@ export default {
       this.isIndeterminate = false;
       this.checkedDocs = [];
       this.chooseStatistic = "week";
-      console.log(this.dateRange, "@@@@@");
+    },
+    handleCheckParams() {
+      if (!this.name) return false;
+      if (!this.chargePerson) return false;
+      if (!this.chooseStatistic) return false;
+      if (!this.dateRange) return false;
+      if (!this.chooseTaskNames) return false;
+      return this.checkedDocs;
     },
     handleStatisticChange(val) {
       console.log(val, "@@@@@");
