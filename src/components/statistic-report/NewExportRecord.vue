@@ -61,7 +61,10 @@
           </el-checkbox>
           <div style="margin: 15px 0;"></div>
           <el-checkbox-group v-model="checkedDocs" @change="handleCheckedCitiesChange">
-            <el-checkbox v-for="city in docOptions" :label="city" :key="city">{{ city }}</el-checkbox>
+            <el-checkbox v-for="item in docOptions"
+                         :label="item.code"
+                         :key="item.code">{{ item.name }}
+            </el-checkbox>
           </el-checkbox-group>
         </div>
       </div>
@@ -83,12 +86,7 @@ const dayjs = require("dayjs");
 export default {
   name: "NewExportRecord",
   mounted() {
-    templateDataList().then(({ data }) => {
-      this.docOptions = data.map(t => {
-        const index = t.name.indexOf("-");
-        return index > -1 ? t.name.substring(0, index) : t.name;
-      });
-    });
+    this.handleStatisticChange("week");
   },
   data() {
     return {
@@ -143,19 +141,18 @@ export default {
   methods: {
     newReport(status) {
       addReport({
-        id: "12987150",
-        name: this.name,
+        name: this.name.trim(),
         chargePerson: this.chargePerson,
+        desc: this.desc,
+        statisticType: this.chooseStatistic,
         status,
-        statisticTime: `${dayjs(this.dateRange[0]).format("YYYY-MM-DD")} ~ ${dayjs(this.dateRange[1]).format("YYYY-MM-DD")}`,
-        exportTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+        fromDate: dayjs(this.dateRange[0]).format("YYYY-MM-DD"),
+        toDate: dayjs(this.dateRange[1]).format("YYYY-MM-DD"),
         taskNames: this.chooseTaskNames.join(","),
         exportDocs: this.checkedDocs.join(","),
         exportPath: `\\\\共享文件\\统计报告报表\\${this.name}.zip`
       }).then(() => {
         this.$emit("returnList");
-      }).catch(err => {
-        this.$message.error(err);
       });
     },
     handleNewAndExport() {
@@ -183,7 +180,8 @@ export default {
       this.chooseStatistic = "week";
     },
     handleCheckParams() {
-      if (!this.name) return false;
+      console.log(this.checkedDocs, "@@@");
+      if (!this.name.trim()) return false;
       if (!this.chargePerson) return false;
       if (!this.chooseStatistic) return false;
       if (!this.dateRange) return false;
@@ -191,7 +189,21 @@ export default {
       return this.checkedDocs;
     },
     handleStatisticChange(val) {
-      console.log(val, "@@@@@");
+      /*templateDataList(val).then(({ data }) => {
+        this.docOptions = data.map(t => {
+          const index = t.name.indexOf("-");
+          return index > -1 ? t.name.substring(0, index) : t.name;
+        });
+      });*/
+      templateDataList(val).then(({ data }) => {
+        this.docOptions = data.map(t => {
+          const index = t.name.indexOf("-");
+          return {
+            name: index > -1 ? t.name.substring(0, index) : t.name,
+            code: t.code
+          };
+        });
+      });
     },
     handleCheckAllChange(val) {
       this.checkedDocs = val ? this.docOptions : [];

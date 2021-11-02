@@ -156,7 +156,13 @@
 <script>
 import NewExportRecord from "@/components/statistic-report/NewExportRecord";
 import ExportRecordDetail from "@/components/statistic-report/ExportRecordDetail";
-import { gainStatus, reportList, chargePersonList, templateDataList } from "@/api/statisticReport/report.js";
+import {
+  gainStatus,
+  reportList,
+  chargePersonList,
+  templateDataList,
+  transferTemplate
+} from "@/api/statisticReport/report.js";
 
 let erd = require("element-resize-detector")();
 
@@ -167,10 +173,13 @@ export default {
     this.isLoading = true;
     this.title = this.exportOptions.list;
     chargePersonList().then(({ data }) => {
-      this.chargePersons = data;
+      this.chargePersons = data.map(item => ({ value: item, label: item }));
     });
-    templateDataList().then(({ data }) => {
-      this.templateData = data;
+    templateDataList("week").then(({ data }) => {
+      this.templateData = data.map((item, i) => ({
+        index: i + 1,
+        name: item.name
+      }));
     });
     this.getList();
     this.$nextTick(() => {
@@ -257,7 +266,15 @@ export default {
       reportList(page, rows, reportName, chargePerson).then(({ data }) => {
         const { list, total } = data;
         this.pageInfo.totalCount = total;
-        this.tableData = list;
+
+        this.tableData = list.map((item, index) => ({
+          ...item,
+          index: (page - 1) * rows + index + 1,
+          statisticTime: `${item.fromDate} ～ ${item.toDate} `,
+          exportTime: item.exportTime ? item.exportTime : "-",
+          exportDocs: transferTemplate(item.exportDocs)
+        }));
+
         this.isLoading = false;
       }).catch(err => {
         this.isLoading = false;
