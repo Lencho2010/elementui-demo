@@ -6,7 +6,7 @@
         class="el-menu-vertical-demo"
         active-text-color="#1890ff"
         style="font-size: 26px"
-        router="true"
+        :router="true"
         @select="handleSelect">
         <el-menu-item index="jctb-task" route="/contrast-analysis/jctb-task">
           <i class="el-icon-message"></i>

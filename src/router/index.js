@@ -1,8 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import FitComparison from "./fit-comparison";
 import contrastAnalysis from "@/router/contrastAnalysis";
-import Home from "./home";
 import Query from "./query";
 import home from "./home";
 
