@@ -16,7 +16,6 @@
         <div class="label-info">统计信息</div>
         <div class="grid-info">
           <span><i class="must-flag">*</i>统计类型：</span>
-          <!--          <el-input size="small"></el-input>-->
           <el-select v-model="chooseStatistic" @change="handleStatisticChange" placeholder="请选择">
             <el-option
               v-for="item in statisticOptions"
@@ -27,40 +26,41 @@
           </el-select>
 
           <span><i class="must-flag">*</i>统计日期：</span>
-          <el-date-picker
-            v-model="dateRange"
-            @change="handleDataChange"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions">
-          </el-date-picker>
+          <div style="border-radius: 2px; border: 1px solid #dcdfe6; padding: 0 15px">
+            <span>{{ dateRangeStr }}</span>
+          </div>
 
           <span><i class="must-flag">*</i>统计批次：</span>
-          <el-select
-            size="small"
-            v-model="chooseTaskNames"
-            multiple
-            filterable
-            collapse-tags
-            placeholder="请选择">
-            <el-option
-              v-for="item in taskNameArr"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <div>
+            <el-select
+              style="width: calc(100% - 100px)"
+              size="small"
+              v-model="chooseTaskNames"
+              multiple
+              filterable
+              collapse-tags
+              placeholder="请选择">
+              <el-option
+                v-for="item in taskNameArr"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleChooseTaskNames"
+              style="float: right">选择批次
+            </el-button>
+          </div>
         </div>
         <div class="label-info">导出文档</div>
         <div class="doc-info">
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkDocsAll" @change="handleCheckAllChange">全选
           </el-checkbox>
           <div style="margin: 15px 0;"></div>
-          <el-checkbox-group v-model="checkedDocs" @change="handleCheckedCitiesChange">
+          <el-checkbox-group v-model="checkedDocs" @change="handleCheckedDocsChange">
             <el-checkbox v-for="item in docOptions"
                          :label="item.code"
                          :key="item.code">{{ item.name }}
@@ -69,6 +69,7 @@
         </div>
       </div>
     </el-main>
+    <choose-batch @chooseFinished="handleChooseFinished" ref="choose"></choose-batch>
     <el-footer style="text-align: center">
       <el-button size="small" @click="handleNewAndExport">创建并导出</el-button>
       <el-button size="small" @click="handleNew">创建</el-button>
@@ -80,11 +81,13 @@
 <script>
 
 import { addReport, taskNameList, templateDataList } from "@/api/statisticReport/report";
+import ChooseBatch from "@/components/statistic-report/ChooseBatch";
 
 const dayjs = require("dayjs");
 
 export default {
   name: "NewExportRecord",
+  components: { ChooseBatch },
   mounted() {
     this.handleStatisticChange("week");
   },
@@ -93,45 +96,16 @@ export default {
       name: "",
       chargePerson: "admin",
       desc: "",
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: "最近一周",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
-            }
-          }, {
-            text: "最近一个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
-            }
-          }, {
-            text: "最近三个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
-            }
-          }
-        ]
-      },
-      dateRange: "",
       statisticOptions: [
         { value: "week", label: "周报" },
         { value: "month", label: "月报" },
         { value: "year", label: "年报" }
       ],
       chooseStatistic: "week",
+      fromDate: "",
+      toDate: "",
       taskNameArr: [],
       chooseTaskNames: [],
-
       checkDocsAll: false,
       checkedDocs: [],
       docOptions: [],
@@ -146,8 +120,8 @@ export default {
         desc: this.desc,
         statisticType: this.chooseStatistic,
         status,
-        fromDate: dayjs(this.dateRange[0]).format("YYYY-MM-DD"),
-        toDate: dayjs(this.dateRange[1]).format("YYYY-MM-DD"),
+        fromDate: this.fromDate,
+        toDate: this.toDate,
         taskNames: this.chooseTaskNames.join(","),
         exportDocs: this.checkedDocs.join(","),
         exportPath: `\\\\共享文件\\统计报告报表\\${this.name}.zip`
@@ -173,18 +147,18 @@ export default {
       this.name = "";
       this.chargePerson = "admin";
       this.desc = "";
-      this.dateRange = "";
+      this.fromDate = "";
+      this.toDate = "";
       this.chooseTaskNames = [];
       this.isIndeterminate = false;
       this.checkedDocs = [];
       this.chooseStatistic = "week";
     },
     handleCheckParams() {
-      console.log(this.checkedDocs, "@@@");
       if (!this.name.trim()) return false;
       if (!this.chargePerson) return false;
       if (!this.chooseStatistic) return false;
-      if (!this.dateRange) return false;
+      if (!this.dateRangeStr) return false;
       if (!this.chooseTaskNames) return false;
       return this.checkedDocs;
     },
@@ -209,19 +183,29 @@ export default {
       this.checkedDocs = val ? this.docOptions : [];
       this.isIndeterminate = false;
     },
-    handleCheckedCitiesChange(value) {
+    handleCheckedDocsChange(value) {
       let checkedCount = value.length;
       this.checkDocsAll = checkedCount === this.docOptions.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.docOptions.length;
     },
-    handleDataChange(date) {
-      if (!date) this.taskNameArr = [];
-      taskNameList(date).then(({ data }) => {
-        this.taskNameArr = data.map(t => ({ label: t, value: t }));
-      }).catch(err => {
-        this.taskNameArr = [];
-        this.$message.error(err);
-      });
+    handleChooseTaskNames() {
+      this.$refs.choose.showDialog(this.chooseStatistic);
+    },
+    handleChooseFinished({ fromDate, toDate, chooseTaskNames }) {
+      this.fromDate = fromDate;
+      this.toDate = toDate;
+      this.taskNameArr = chooseTaskNames.map(item => ({
+        value: item,
+        label: item
+      }));
+      this.chooseTaskNames = chooseTaskNames;
+    }
+  },
+  computed: {
+    dateRangeStr() {
+      if (this.fromDate && this.toDate)
+        return `${this.fromDate} ~ ${this.toDate}`;
+      return "";
     }
   }
 };

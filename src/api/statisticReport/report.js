@@ -87,3 +87,69 @@ export function taskNameList(dateRange) {
     });
   });
 }
+
+export function gainJctbTask({ fromDate, toDate, taskName, statusArr }) {
+  return new Promise(resolve => {
+    const tableData = [
+      {
+        taskName: "2021S104300019",
+        code: "2021S104300019",
+        pushTime: "2021-10-27 08:50:08",
+        receiveTime: "2021-10-27 08:50:08",
+        finishTime: "-",
+        tbCount: 150,
+        status: 0
+      }, {
+        taskName: "2021S104300018",
+        code: "2021S104300018",
+        pushTime: "2021-10-27 08:50:08",
+        receiveTime: "2021-10-27 08:50:08",
+        finishTime: "2021-10-27 08:50:08",
+        tbCount: 150,
+        status: 1
+      }, {
+        taskName: "2021S104300017",
+        code: "2021S104300017",
+        pushTime: "2021-10-27 08:50:08",
+        receiveTime: "2021-10-27 08:50:08",
+        finishTime: "2021-10-27 08:50:08",
+        tbCount: 150,
+        status: 3
+      }, {
+        taskName: "2021S104300016",
+        code: "2021S104300016",
+        pushTime: "2021-10-27 08:50:08",
+        receiveTime: "2021-10-27 08:50:08",
+        finishTime: "2021-10-27 08:50:08",
+        tbCount: 150,
+        status: 4
+      }, {
+        taskName: "2021S104300015",
+        code: "2021S104300015",
+        pushTime: "2021-10-27 08:50:08",
+        receiveTime: "2021-10-27 08:50:08",
+        finishTime: "2021-10-27 08:50:08",
+        tbCount: 150,
+        status: 1
+      }, {
+        taskName: "2021S104300014",
+        code: "2021S104300014",
+        pushTime: "2021-10-27 08:50:08",
+        receiveTime: "2021-10-27 08:50:08",
+        finishTime: "2021-10-27 08:50:08",
+        tbCount: 150,
+        status: 1
+      }, {
+        taskName: "2021S104300013",
+        code: "2021S104300013",
+        pushTime: "2021-10-27 08:50:08",
+        receiveTime: "2021-10-27 08:50:08",
+        finishTime: "-",
+        tbCount: 150,
+        status: 0
+      }
+    ];
+    resolve({ code: 200, message: "", data: tableData });
+  });
+}
+
