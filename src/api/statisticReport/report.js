@@ -88,7 +88,7 @@ export function taskNameList(dateRange) {
   });
 }
 
-export function gainJctbTask({ fromDate, toDate, taskName, statusArr }) {
+export function gainJctbTask2({ fromDate, toDate, taskName, statusArr }) {
   return new Promise(resolve => {
     const tableData = [
       {
@@ -150,6 +150,18 @@ export function gainJctbTask({ fromDate, toDate, taskName, statusArr }) {
       }
     ];
     resolve({ code: 200, message: "", data: tableData });
+  });
+}
+
+export function gainJctbTask({ fromDate, toDate, taskName, statusArr }) {
+  let url = `/jctbTask/listByFilter`;
+  return request.get(url, {
+    params: {
+      fromDate,
+      toDate,
+      taskName,
+      status: statusArr.join(","),
+    }
   });
 }
 

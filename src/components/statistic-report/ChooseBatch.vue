@@ -57,6 +57,7 @@
       <el-table
         ref="table"
         :data="tableData"
+        :height="500"
         stripe
         tooltip-effect="dark"
         style="width: 100%"
@@ -139,7 +140,7 @@
 </template>
 
 <script>
-import { gainJctbTask } from "@/api/statisticReport/report";
+import { gainJctbTask, gainJctbTask2 } from "@/api/statisticReport/report";
 
 const dayjs = require("dayjs");
 
@@ -183,10 +184,16 @@ export default {
       originDateRange: [],
       statusOptions: [
         {
+          value: -1,
+          label: "失败"
+        }, {
           value: 1,
           label: "正常"
         }, {
           value: 0,
+          label: "未完成"
+        }, {
+          value: 2,
           label: "未完成"
         }, {
           value: 3,
@@ -262,6 +269,9 @@ export default {
         case -1:
           ret = "red";
           break;
+        case 2:
+          ret = "#0f78d1";
+          break;
         case 3:
           ret = "#f04134";
           break;
@@ -290,8 +300,30 @@ export default {
         taskName: this.searchInput.trim(),
         statusArr: this.chooseStatusArr
       }).then(({ data }) => {
-        this.tableData = data;
+        this.tableData = data.map(item => ({
+          code: item.taskName,
+          taskName: item.taskName,
+          pushTime: item.startTime,
+          receiveTime: item.endTime,
+          finishTime: item.endTime,
+          tbCount: item.tbCount,
+          status: item.status
+        }));
+
+        console.log(this.tableData, "@@@");
       });
+      /*gainJctbTask2({
+        fromDate: this.dateRange[0],
+        toDate: this.dateRange[1],
+        taskName: this.searchInput.trim(),
+        statusArr: this.chooseStatusArr
+      }).then(({ data }) => {
+        this.tableData = data.map(item => ({
+          ...item,
+        }));
+
+        console.log(this.tableData, "@@@");
+      });*/
     }
   },
   computed: {
