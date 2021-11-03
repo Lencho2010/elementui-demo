@@ -169,6 +169,21 @@ export default {
           return index > -1 ? t.name.substring(0, index) : t.name;
         });
       });*/
+      const end = new Date();
+      const start = new Date();
+      switch (val) {
+        case "week":
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          break;
+        case "month":
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          break;
+        case "year":
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
+          break;
+      }
+      this.fromDate = dayjs(start).format("YYYY-MM-DD");
+      this.toDate = dayjs(end).format("YYYY-MM-DD");
       templateDataList(val).then(({ data }) => {
         this.docOptions = data.map(t => {
           const index = t.name.indexOf("-");
