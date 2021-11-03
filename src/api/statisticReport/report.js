@@ -167,7 +167,6 @@ export function gainJctbTask({ fromDate, toDate, taskName, statusArr }) {
 
 export function processExportTask(record) {
   let url = `/reportTask/processExportTask`;
-  console.log(record, "@@@");
   return request.put(url, record);
 }
 

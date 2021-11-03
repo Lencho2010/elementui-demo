@@ -266,7 +266,6 @@ export default {
       reportList(page, rows, reportName, chargePerson).then(({ data }) => {
         const { list, total } = data;
         this.pageInfo.totalCount = total;
-        console.log(list, "@@@");
         this.tableData = list.map((item, index) => ({
           ...item,
           index: (page - 1) * rows + index + 1,
