@@ -161,7 +161,8 @@ import {
   reportList,
   chargePersonList,
   templateDataList,
-  transferTemplate
+  transferTemplate,
+  processExportTask
 } from "@/api/statisticReport/report.js";
 
 let erd = require("element-resize-detector")();
@@ -217,7 +218,9 @@ export default {
   },
   methods: {
     handleExport(index, row) {
-      console.log(index, row);
+      processExportTask(row).then(({ data }) => {
+        this.handleQuery();
+      });
     },
     handleDetail(index, row) {
       console.log(index, row);
@@ -260,13 +263,10 @@ export default {
       const rows = this.pageInfo.pageSize;
       const reportName = this.taskNameInput;
       const chargePerson = this.chargePerson;
-      // const { list: status } = this.menus.statusList.find(item => item.value === this.menus.selectStatus);
-
-      // reportList(page, rows, taskName, status.join(",")).then(({ data }) => {
       reportList(page, rows, reportName, chargePerson).then(({ data }) => {
         const { list, total } = data;
         this.pageInfo.totalCount = total;
-
+        console.log(list, "@@@");
         this.tableData = list.map((item, index) => ({
           ...item,
           index: (page - 1) * rows + index + 1,

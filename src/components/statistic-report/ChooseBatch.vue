@@ -309,8 +309,6 @@ export default {
           tbCount: item.tbCount,
           status: item.status
         }));
-
-        console.log(this.tableData, "@@@");
       });
       /*gainJctbTask2({
         fromDate: this.dateRange[0],

@@ -160,8 +160,14 @@ export function gainJctbTask({ fromDate, toDate, taskName, statusArr }) {
       fromDate,
       toDate,
       taskName,
-      status: statusArr.join(","),
+      status: statusArr.join(",")
     }
   });
+}
+
+export function processExportTask(record) {
+  let url = `/reportTask/processExportTask`;
+  console.log(record, "@@@");
+  return request.put(url, record);
 }
 
