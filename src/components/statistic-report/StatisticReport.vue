@@ -283,7 +283,7 @@ export default {
           ...item,
           index: (page - 1) * rows + index + 1,
           statisticTime: `${item.fromDate} ～ ${item.toDate} `,
-          exportTime: item.exportTime ? item.exportTime : "-",
+          exportTime: item.endTime ? item.endTime : "-",
           exportDocs: transferTemplate(item.exportDocs)
         }));
 
