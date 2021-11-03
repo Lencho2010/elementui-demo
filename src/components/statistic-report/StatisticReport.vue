@@ -164,6 +164,7 @@ import {
   transferTemplate,
   processExportTask
 } from "@/api/statisticReport/report.js";
+import { del } from "@/api/contrast/jctbTask";
 
 let erd = require("element-resize-detector")();
 
@@ -218,9 +219,21 @@ export default {
   },
   methods: {
     handleExport(index, row) {
-      processExportTask(row).then(({ data }) => {
-        this.handleQuery();
-      });
+      if (row.status === 1) {
+        this.$confirm(`确定要重新导出【${row.name}】这个任务吗？`, "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          processExportTask(row).then(({ data }) => {
+            this.handleQuery();
+          });
+        });
+      } else {
+        processExportTask(row).then(({ data }) => {
+          this.handleQuery();
+        });
+      }
     },
     handleDetail(index, row) {
       console.log(index, row);
