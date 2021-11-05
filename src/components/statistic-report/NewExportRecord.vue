@@ -99,7 +99,8 @@ export default {
       statisticOptions: [
         { value: "week", label: "周报" },
         { value: "month", label: "月报" },
-        { value: "year", label: "年报" }
+        { value: "quarter", label: "季报" }
+        /*{ value: "year", label: "年报" }*/
       ],
       chooseStatistic: "week",
       fromDate: "",
@@ -177,6 +178,9 @@ export default {
           break;
         case "month":
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          break;
+        case "quarter":
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
           break;
         case "year":
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);

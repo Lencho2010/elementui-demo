@@ -218,6 +218,9 @@ export default {
         case "month":
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
           break;
+        case "quarter":
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+          break;
         case "year":
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
           break;

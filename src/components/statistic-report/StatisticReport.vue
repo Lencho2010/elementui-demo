@@ -100,6 +100,7 @@
             <el-table-column label="操作" width="100">
               <template slot-scope="scope">
                 <el-button
+                  v-show="scope.row.status !== 2"
                   size="mini"
                   type="text"
                   @click="handleExport(scope.$index, scope.row)">导出
@@ -144,9 +145,12 @@
             style="color: #ffffff; line-height: 22px;width: 22px; height: 22px; background: #3e8fff; border-radius: 50%;margin-right: 5px; vertical-align: center; text-align: center;">
             {{ item.index }}
           </div>
-          <span>
-            {{ item.name }}
-          </span>
+          <el-tooltip :content="item.name" placement="top">
+            <span style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden" >
+              {{ item.name }}
+            </span>
+          </el-tooltip>
+
         </li>
       </ul>
     </el-aside>
@@ -184,6 +188,7 @@ export default {
       }));
     });
     this.getList();
+    this.intervalList();
     this.$nextTick(() => {
       let timer;
       erd.listenTo(this.$refs["main-container"].$el, ele => {
@@ -214,7 +219,10 @@ export default {
         list: "导出记录",
         add: "新增导出",
         detail: "详情"
-      }
+      },
+      intervalItem: 0,
+      interval: 5000,
+      autoRefresh: false
     };
   },
   methods: {
@@ -229,6 +237,8 @@ export default {
             this.handleQuery();
           });
         });
+      } else if (row.status === 2) {
+        this.$message.warning("任务正在执行中...");
       } else {
         processExportTask(row).then(({ data }) => {
           this.handleQuery();
@@ -292,6 +302,13 @@ export default {
         this.isLoading = false;
         this.$message.error(err);
       });
+    },
+    intervalList() {
+      let that = this;
+      this.intervalItem = setInterval(function() {
+        if (that.autoRefresh)
+          that.getList();
+      }, that.interval);
     },
     gainStatus(status) {
       return gainStatus(status);
