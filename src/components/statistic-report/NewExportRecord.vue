@@ -90,6 +90,7 @@ export default {
   components: { ChooseBatch },
   mounted() {
     this.handleStatisticChange("week");
+    this.initReportTaskName();
   },
   data() {
     return {
@@ -218,6 +219,9 @@ export default {
         label: item
       }));
       this.chooseTaskNames = chooseTaskNames;
+    },
+    initReportTaskName() {
+      this.name = `统计报告报表导出-${dayjs().format("YYYYMMDDHHmmss")}`;
     }
   },
   computed: {
