@@ -126,7 +126,7 @@ export default {
         toDate: this.toDate,
         taskNames: this.chooseTaskNames.join(","),
         exportDocs: this.checkedDocs.join(","),
-        exportPath: `\\\\共享文件\\统计报告报表\\${this.name}.zip`
+        // exportPath: `\\\\共享文件\\统计报告报表\\${this.name}.zip`
       }).then(() => {
         this.$emit("returnList");
       });
