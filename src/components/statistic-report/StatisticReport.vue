@@ -34,6 +34,10 @@
                 </el-select>
               </div>
               <div>
+                <el-switch style="margin-right: 20px"
+                           v-model="autoRefresh"
+                           inactive-text="自动">
+                </el-switch>
                 <el-button size="mini" @click="handleQuery" type="primary">查询</el-button>
                 <el-button size="mini" @click="handleReset">重置</el-button>
               </div>
@@ -146,7 +150,7 @@
             {{ item.index }}
           </div>
           <el-tooltip :content="item.name" placement="top">
-            <span style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden" >
+            <span style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden">
               {{ item.name }}
             </span>
           </el-tooltip>
