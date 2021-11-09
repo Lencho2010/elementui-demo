@@ -16,7 +16,7 @@
         <div class="label-info">统计信息</div>
         <div class="grid-info">
           <span><i class="must-flag">*</i>统计类型：</span>
-          <el-select v-model="chooseStatistic" @change="handleStatisticChange" placeholder="请选择">
+          <el-select disabled v-model="chooseStatistic" @change="handleStatisticChange" placeholder="请选择">
             <el-option
               v-for="item in statisticOptions"
               :key="item.value"
