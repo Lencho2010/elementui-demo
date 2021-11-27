@@ -1,28 +1,27 @@
 <template>
-  <div id="fit-wrapper">
-    <el-drawer ref="dialog"
+  <div id="fit-wrapper2">
+    <el-dialog ref="dialog"
                :visible.sync="centerDialogVisible"
-               direction="btt"
-               :size="pageSize"
-               :with-header="false">
+               width="100%"
+               top="0">
       <div class="root-wrapper">
         <div class="header">
           <div class="left">
             <span class="title">{{ title }}</span>
             <div class="search-wrap fl" style="margin-left: 50px">
               <el-input
-                  class="search-input"
-                  v-model="searchText"
-                  placeholder="请输入"
-                  @keyup.enter.native="getList"></el-input>
+                class="search-input"
+                v-model="searchText"
+                placeholder="请输入"
+                @keyup.enter.native="getList"></el-input>
               <i @click="getList"></i>
             </div>
             <el-select v-model="filterInfo.modelVal" placeholder="请选择" @change="selectChange">
               <el-option
-                  v-for="item in filterInfo.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                v-for="item in filterInfo.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
               </el-option>
             </el-select>
           </div>
@@ -35,9 +34,9 @@
         </div>
         <div class="body">
           <el-table
-              :data="tableData" :height="tableHeight"
-              :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
-              border style="width: 100%">
+            :data="tableData" :height="tableHeight"
+            :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
+            border style="width: 100%">
             <el-table-column v-for="item of columns"
                              :align="item.align"
                              :prop="item.prop"
@@ -47,7 +46,7 @@
           </el-table>
         </div>
       </div>
-    </el-drawer>
+    </el-dialog>
   </div>
 </template>
 
@@ -57,14 +56,14 @@ import layExcel from "lay-excel";
 import {listFitResult} from "@/api/contrast/fitDetail.js";
 
 export default {
-  name: "FitDetail",
+  name: "FitDetail2",
   mounted() {
     this.filterInfo.options = this.columns
-        .filter(item => item.filter)
-        .map(item => ({
-          value: item.prop,
-          label: item.label
-        }));
+      .filter(item => item.filter)
+      .map(item => ({
+        value: item.prop,
+        label: item.label
+      }));
     this.filterInfo.modelVal = this.filterInfo.options[0].label;
     this.filterInfo.curValue = this.filterInfo.options[0].value;
 
@@ -100,8 +99,7 @@ export default {
       },
       isExpand: false,
       tableHeight: 300,
-      taskName: "",
-      pageSize: 370,
+      taskName: ""
     };
   },
   methods: {
@@ -164,8 +162,7 @@ export default {
   computed: {},
   watch: {
     isExpand(newVal, oldVal) {
-      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 70) : 300;
-      this.pageSize = newVal ? "100%" : 370;
+      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 140) : 300;
     }
   }
 };
@@ -173,7 +170,21 @@ export default {
 
 <style lang="less">
 
-#fit-wrapper {
+#fit-wrapper2 {
+  .el-dialog {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .el-dialog__header {
+    display: none;
+  }
+
+  .el-dialog__body {
+    padding: 5px;
+  }
+
   .root-wrapper {
     display: flex;
     flex-direction: column;

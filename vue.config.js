@@ -13,7 +13,7 @@ module.exports = {
         // proxy: 'http://localhost:8001'
         proxy: {
             "/api": {
-                target: "http://localhost:8001",
+                target: "http://localhost:8001/webstore",
                 pathRewrite: {"^/api": ""}
             }
         }

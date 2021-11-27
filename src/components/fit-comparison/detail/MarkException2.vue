@@ -1,12 +1,11 @@
 <template>
-  <div id="mark-exception">
+  <div id="mark-exception2">
     <!--    @close="handleBeforeClose" :before-close="beforeClose"-->
-    <el-drawer ref="dialog"
+    <el-dialog ref="dialog"
                :visible.sync="centerDialogVisible"
-               :before-close="handleClose"
-               direction="btt"
-               :size="pageSize"
-               :with-header="false">
+               :close-on-click-modal="false"
+               width="100%"
+               top="0">
       <div class="root-wrapper">
         <div class="header">
           <div class="left">
@@ -79,7 +78,7 @@
           </el-table>
         </div>
       </div>
-    </el-drawer>
+    </el-dialog>
   </div>
 </template>
 
@@ -88,7 +87,7 @@ import layExcel from "lay-excel";
 import { listMarkException, batchUpdate } from "@/api/contrast/markException";
 
 export default {
-  name: "MarkException",
+  name: "MarkException2",
   mounted() {
     //this.originData = markException();
     this.filterInfo.options = this.columns
@@ -153,8 +152,7 @@ export default {
         curValue: ""
       },
       isExpand: false,
-      tableHeight: 300,
-      pageSize: 370
+      tableHeight: 300
     };
   },
   methods: {
@@ -231,9 +229,13 @@ export default {
         this.$message.warning("没有要保存的数据");
       }
     },
-    handleClose(done) {
+    beforeClose(done) {
+      console.log("beforeClose...");
+      console.log(done);
+    },
+    handleBeforeClose() {
       if (this.checkIsEdit().length < 1) {
-        done();
+        this.centerDialogVisible = false;
       } else {
         this.$confirm("是否要保存编辑数据?", "提示", {
           confirmButtonText: "确定",
@@ -241,17 +243,14 @@ export default {
           type: "warning"
         }).then(() => {
           this.handleCommitEdit();
-          done();
+          this.centerDialogVisible = false;
         }).catch(() => {
           this.handleCancelEdit();
-          done();
+          this.centerDialogVisible = false;
         });
 
         //this.$message.warning("请先保存编辑数据");
       }
-    },
-    handleBeforeClose() {
-      this.$refs.dialog.closeDrawer();
     },
     checkIsEdit() {
       return this.originData.filter(t => {
@@ -263,8 +262,7 @@ export default {
   computed: {},
   watch: {
     isExpand(newVal, oldVal) {
-      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 70) : 300;
-      this.pageSize = newVal ? "100%" : 370;
+      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 140) : 300;
     }
   }
 };
@@ -272,7 +270,20 @@ export default {
 
 <style lang="less">
 
-#mark-exception {
+#mark-exception2 {
+  .el-dialog {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .el-dialog__header {
+    display: none;
+  }
+
+  .el-dialog__body {
+    padding: 5px;
+  }
 
   .root-wrapper {
     display: flex;

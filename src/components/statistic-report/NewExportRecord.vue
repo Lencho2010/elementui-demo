@@ -125,7 +125,7 @@ export default {
         fromDate: this.fromDate,
         toDate: this.toDate,
         taskNames: this.chooseTaskNames.join(","),
-        exportDocs: this.checkedDocs.join(","),
+        exportDocs: this.checkedDocs.join(",")
         // exportPath: `\\\\共享文件\\统计报告报表\\${this.name}.zip`
       }).then(() => {
         this.$emit("returnList");
@@ -200,7 +200,7 @@ export default {
       });
     },
     handleCheckAllChange(val) {
-      this.checkedDocs = val ? this.docOptions : [];
+      this.checkedDocs = val ? this.docOptions.map(t => t.code) : [];
       this.isIndeterminate = false;
     },
     handleCheckedDocsChange(value) {

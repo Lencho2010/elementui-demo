@@ -1,9 +1,10 @@
 <template>
   <div id="result-check">
-    <el-dialog ref="dialog"
+    <el-drawer ref="dialog"
                :visible.sync="centerDialogVisible"
-               width="100%"
-               top="0">
+               direction="btt"
+               :size="pageSize"
+               :with-header="false">
       <div class="root-wrapper">
         <div class="header">
           <div class="left">
@@ -46,7 +47,7 @@
           </el-table>
         </div>
       </div>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
@@ -96,7 +97,8 @@ export default {
         curValue: ""
       },
       isExpand: false,
-      tableHeight: 300
+      tableHeight: 300,
+      pageSize: 370,
     };
   },
   methods: {
@@ -157,7 +159,8 @@ export default {
   computed: {},
   watch: {
     isExpand(newVal, oldVal) {
-      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 140) : 300;
+      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 70) : 300;
+      this.pageSize = newVal ? "100%" : 370;
     }
   }
 };

@@ -48,3 +48,9 @@ export function updateScanInterval(scanInterval) {
   let url = `/sysPara/scanInterval/${scanInterval}`;
   return request.put(url);
 }
+
+export function gainReportYear() {
+  let url = `/sysPara/reportYear`;
+  return request.get(url);
+}
+

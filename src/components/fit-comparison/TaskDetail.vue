@@ -117,8 +117,8 @@ import {findOne} from "@/api/contrast/jctbTask.js";
 import {listTaskInfo} from "@/api/contrast/taskInfo.js";
 import date2str from "../../util/date2str";
 import taskDetail from "../../test/taskDetail";
-import UnzipDetail from "./detail/UnzipDetail";
-import QualityCheck from "./detail/QualityCheck";
+import UnzipDetail from "./detail/UnzipDetail2";
+import QualityCheck from "./detail/QualityCheck2";
 import FitDetail from "./detail/FitDetail";
 import ResultCheck from "./detail/ResultCheck";
 import MarkException from "./detail/MarkException";
@@ -144,7 +144,8 @@ export default {
       erd.listenTo(lisDom, function (element) {
         clearTimeout(timer);
         timer = setTimeout(() => {
-          that.tableHeight = lisDom.clientHeight - 237;
+          // that.tableHeight = lisDom.clientHeight - 237;
+          that.tableHeight = lisDom.clientHeight - 167;
           console.log(that.tableHeight);
         }, 500);
       });

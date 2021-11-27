@@ -43,8 +43,12 @@ export default {
   },
   methods: {
     init() {
-      let path = this.$route.path;
-      this.activeIndex = this.menuList.findIndex(item => path.indexOf(item.route) > -1);
+      /*let path = this.$route.path;
+      console.log(path.split('/'), this.menuList);
+      this.activeIndex = this.menuList.findIndex(item => path.indexOf(item.route) > -1);*/
+
+      let path = this.$route.path.split("/")[1];
+      this.activeIndex = this.menuList.findIndex(item => item.route.indexOf(path) > -1);
     },
     toggleMenu(item, index) {
       this.activeIndex = index;
@@ -58,7 +62,8 @@ export default {
 
 #nav-bar {
   width: 100%;
-  height: 70px;
+  /*height: 70px;*/
+  height: 0;
   background-image: url("../assets/images/layout/head_bg.png");
   background-size: 100% 100%;
   font-size: 14px;

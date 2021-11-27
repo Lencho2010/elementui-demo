@@ -1,28 +1,27 @@
 <template>
-  <div id="fit-wrapper">
-    <el-drawer ref="dialog"
+  <div id="result-check2">
+    <el-dialog ref="dialog"
                :visible.sync="centerDialogVisible"
-               direction="btt"
-               :size="pageSize"
-               :with-header="false">
+               width="100%"
+               top="0">
       <div class="root-wrapper">
         <div class="header">
           <div class="left">
             <span class="title">{{ title }}</span>
             <div class="search-wrap fl" style="margin-left: 50px">
               <el-input
-                  class="search-input"
-                  v-model="searchText"
-                  placeholder="请输入"
-                  @keyup.enter.native="getList"></el-input>
+                class="search-input"
+                v-model="searchText"
+                placeholder="请输入"
+                @keyup.enter.native="getList"></el-input>
               <i @click="getList"></i>
             </div>
             <el-select v-model="filterInfo.modelVal" placeholder="请选择" @change="selectChange">
               <el-option
-                  v-for="item in filterInfo.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                v-for="item in filterInfo.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
               </el-option>
             </el-select>
           </div>
@@ -35,9 +34,9 @@
         </div>
         <div class="body">
           <el-table
-              :data="tableData" :height="tableHeight"
-              :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
-              border style="width: 100%">
+            :data="tableData" :height="tableHeight"
+            :header-cell-style="{backgroundColor:'#f0f0f0',color:'#333',fontWeight:'bold',fontSize:'18px'}"
+            border style="width: 100%">
             <el-table-column v-for="item of columns"
                              :align="item.align"
                              :prop="item.prop"
@@ -47,33 +46,33 @@
           </el-table>
         </div>
       </div>
-    </el-drawer>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import fitDetail from "../../../test/fitDetail";
+//import resultCheck from "../../../test/resultCheck";
+import {listResultCheck} from "@/api/contrast/resucltCheck"
 import layExcel from "lay-excel";
-import {listFitResult} from "@/api/contrast/fitDetail.js";
 
 export default {
-  name: "FitDetail",
+  name: "ResultCheck2",
   mounted() {
+    //this.originData = resultCheck();
+
     this.filterInfo.options = this.columns
-        .filter(item => item.filter)
-        .map(item => ({
-          value: item.prop,
-          label: item.label
-        }));
+      .filter(item => item.filter)
+      .map(item => ({
+        value: item.prop,
+        label: item.label
+      }));
     this.filterInfo.modelVal = this.filterInfo.options[0].label;
     this.filterInfo.curValue = this.filterInfo.options[0].value;
-
-    /*this.originData = fitDetail();
-    this.getList();*/
+    // this.getList();
   },
   data() {
     return {
-      title: "套合对比",
+      title: "成果检查",
       columns: [
         {prop: "index", label: "序号", width: 80, align: "center", filter: false},
         {prop: "taskName", label: "批次", width: 170, align: "center", filter: true},
@@ -83,11 +82,9 @@ export default {
         {prop: "cityName", label: "地市名称", width: 150, align: "center", filter: true},
         {prop: "provinceCode", label: "省级代码", width: 130, align: "center", filter: true},
         {prop: "provinceName", label: "省级名称", width: 150, align: "center", filter: true},
-        {prop: "originCount", label: "原个数", width: 150, align: "center", filter: true},
-        {prop: "resultCount", label: "结果个数", width: 120, align: "center", filter: true},
-        {prop: "status", label: "状态", width: 120, align: "center", filter: true},
-        {prop: "fail", label: "错误", width: 150, align: "center", filter: true},
-        {prop: "info", label: "信息", width: "auto", align: "left", filter: true}
+        {prop: "ruleCode", label: "规则代码", width: 150, align: "center", filter: true},
+        {prop: "ruleName", label: "规则", width: 380, align: "center", filter: true},
+        {prop: "status", label: "质检结果", width: "auto", align: "left", filter: false}
       ],
       originData: [],
       tableData: [],
@@ -99,21 +96,17 @@ export default {
         curValue: ""
       },
       isExpand: false,
-      tableHeight: 300,
-      taskName: "",
-      pageSize: 370,
+      tableHeight: 300
     };
   },
   methods: {
     showDialog(taskName) {
-      this.taskName = taskName;
-      this.isExpand = false;
-      this.centerDialogVisible = true;
-
-      listFitResult(this.taskName).then(({data}) => {
+      listResultCheck(taskName).then(({data}) => {
         this.originData = data.map(t => ({...t, status: this.gainStatus(t.status)}));
         this.getList();
-      });
+        this.centerDialogVisible = true;
+      })
+      this.isExpand = false;
     },
     selectChange(val) {
       this.filterInfo.curValue = val;
@@ -148,10 +141,10 @@ export default {
       let ret = "";
       switch (status) {
         case -1:
-          ret = "处理失败";
+          ret = "不通过";
           break;
         case 1:
-          ret = "处理成功";
+          ret = "通过";
           break;
         case 0:
         default:
@@ -164,8 +157,7 @@ export default {
   computed: {},
   watch: {
     isExpand(newVal, oldVal) {
-      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 70) : 300;
-      this.pageSize = newVal ? "100%" : 370;
+      this.tableHeight = newVal ? (this.$refs.dialog.$el.clientHeight - 140) : 300;
     }
   }
 };
@@ -173,7 +165,21 @@ export default {
 
 <style lang="less">
 
-#fit-wrapper {
+#result-check2 {
+  .el-dialog {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .el-dialog__header {
+    display: none;
+  }
+
+  .el-dialog__body {
+    padding: 5px;
+  }
+
   .root-wrapper {
     display: flex;
     flex-direction: column;
