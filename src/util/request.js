@@ -1,6 +1,8 @@
 import axios from "axios";
-import { Message, MessageBox } from "element-ui";
+import { Message, MessageBox, Loading } from "element-ui";
+import { saveAs } from "file-saver";
 
+let downloadLoadingInstance;
 const env = Object.is(process.env.NODE_ENV, "production");
 
 // 创建axios实例
@@ -36,11 +38,9 @@ service.interceptors.request.use(config => {
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    /**
-     * code为非200是抛错 可结合自己业务进行修改
-     */
-    if (response.data instanceof Blob) {
-      return Promise.resolve(response)
+
+    if (response.request.responseType === "blob" || response.request.responseType === "arraybuffer" || response.data instanceof Blob) {
+      return response.data;
     }
 
     const res = response.data;
@@ -66,5 +66,25 @@ service.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// 通用下载方法
+export function download(url, params, filename) {
+  downloadLoadingInstance = Loading.service({
+    text: "正在下载数据，请稍候",
+    spinner: "el-icon-loading",
+    background: "rgba(0, 0, 0, 0.7)"
+  });
+  service.post(url, params, {
+    responseType: "blob"
+  }).then(data => {
+    const blob = new Blob([data]);
+    saveAs(blob, filename);
+    downloadLoadingInstance.close();
+  }).catch((r) => {
+    console.error(r);
+    Message.error("下载文件出现错误，请联系管理员！");
+    downloadLoadingInstance.close();
+  });
+}
 
 export default service;

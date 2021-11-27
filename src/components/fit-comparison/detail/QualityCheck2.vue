@@ -67,9 +67,7 @@
 </template>
 
 <script>
-import layExcel from "lay-excel";
-import qualityCheck from "../../../test/qualityCheck";
-import { pageCheckData, exportCheckData } from "@/api/contrast/checkInfo";
+import { pageCheckData, exportCheckDataNew } from "@/api/contrast/checkInfo";
 
 export default {
   name: "QualityCheck2",
@@ -207,31 +205,8 @@ export default {
       const word = this.searchText.trim();
       const searchEntity = { taskName: this.taskName };
       if (!!word) searchEntity[key] = word;
-      exportCheckData(this.activeName, searchEntity).then(res => {
-        const link = document.createElement("a");
-        let blob = new Blob([res.data], {
-          type: "application/vnd.ms-excel"
-          // type: "application/pdf;charset=utf-8",  //.pdf
-        });
-        link.style.display = "none";
-        link.href = URL.createObjectURL(blob);
-
-        const fileName = this.tabDatas.find(t => t.name === this.activeName).label;
-        link.download = fileName + ".xls"; //下载的文件名  注意：加.xls是兼容火狐浏览器
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
-      /*const resData = this.tableData.map(item => item);
-      const resCol = {};
-      this.columns.forEach(item => resCol[item.prop] = item.label);
-      resData.unshift(resCol);
-      const fields = this.columns.map(item => item.prop);
-      const data = layExcel.filterExportData(resData, fields);
-      // 3. 执行导出函数，系统会弹出弹框
-      layExcel.exportExcel({
-        sheet1: data
-      }, `${this.activeName}.xlsx`, "xlsx");*/
+      const fileName = this.tabDatas.find(t => t.name === this.activeName).label + ".xls";
+      exportCheckDataNew(this.activeName, searchEntity, fileName);
     },
     gainStatus(status) {
       let ret = "";

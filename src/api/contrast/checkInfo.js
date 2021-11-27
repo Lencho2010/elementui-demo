@@ -1,6 +1,5 @@
 import request from "../../util/request";
-import ca from "element-ui/src/locale/lang/ca";
-
+import { download } from "@/util/request";
 
 /*export function listCheckResultTotal(taskName) {
   let url = `/checkResultTotal/listByCode/${taskName}`;
@@ -108,5 +107,20 @@ export function exportCheckData(tag, entity) {
       return exportCheckDetail(entity);
     case "fail":
       return exportCheckFail(entity);
+  }
+}
+
+
+export function exportCheckDataNew(tag, entity, fileName) {
+  switch (tag) {
+    case "overview":
+      download(`/jctbQualityCheckOverview/export`, entity, fileName);
+      break;
+    case "detail":
+      download(`/jctbQualityCheckDetail/export`, entity, fileName);
+      break;
+    case "fail":
+      download(`/jctbQualityCheckFail/export`, entity, fileName);
+      break;
   }
 }
